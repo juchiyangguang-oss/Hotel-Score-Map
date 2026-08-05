@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>バス・お風呂 | Hotel Score Map</title>
+
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/evaluation-detail.css">
+</head>
+
+<body>
+
+  <header class="app-header detail-header">
+
+    <button
+      id="backButton"
+      class="back-button"
+      type="button"
+      aria-label="評価追加画面へ戻る"
+    >
+      ＜
+    </button>
+
+    <h1 class="app-title">
+      バス・お風呂
+    </h1>
+
+    <div class="header-spacer"></div>
+
+  </header>
+
+  <main class="main-content detail-main">
+
+    <form
+      id="bathEvaluationForm"
+      class="detail-form"
+      novalidate
+    >
+
+      <!-- 合計評価 -->
+      <section class="detail-score-card">
+
+        <p class="detail-score-label">
+          バス・お風呂
+        </p>
+
+        <p
+          id="bathTotalScore"
+          class="detail-score-value"
+          aria-live="polite"
+        >
+          ☆―.―――
+        </p>
+
+        <p class="detail-score-max">
+          5.000点満点
+        </p>
+
+      </section>
+
+      <!-- 温泉・大浴場 -->
+      <section class="detail-section bath-type-section">
+
+        <div class="detail-section-heading">
+
+          <div>
+            <h2 class="detail-item-title">
+              温泉・大浴場
+            </h2>
+
+            <p class="detail-item-description">
+              宿泊施設のお風呂の種類
+            </p>
+          </div>
+
+          <span
+            id="bathTypePoint"
+            class="detail-item-point"
+          >
+            0.000 / 1.000
+          </span>
+
+        </div>
+
+        <div class="choice-list">
+
+          <label class="choice-option">
+
+            <input
+              type="radio"
+              name="bathType"
+              value="onsen"
+            >
+
+            <span>
+              温泉あり
+              <small>1.000点</small>
+            </span>
+
+          </label>
+
+          <label class="choice-option">
+
+            <input
+              type="radio"
+              name="bathType"
+              value="large-bath"
+            >
+
+            <span>
+              温泉なし・大浴場あり
+              <small>0.800点</small>
+            </span>
+
+          </label>
+
+          <label class="choice-option">
+
+            <input
+              type="radio"
+              name="bathType"
+              value="room-bath"
+            >
+
+            <span>
+              大浴場なし
+              <small>0.500点</small>
+            </span>
+
+          </label>
+
+        </div>
+
+      </section>
+
+      <!-- 清潔感 -->
+      <section class="detail-section star-score-section">
+
+        <div class="detail-section-heading">
+
+          <div>
+            <h2 class="detail-item-title">
+              清潔感
+            </h2>
+
+            <p class="detail-item-description">
+              浴場・浴槽・脱衣所などを評価
+            </p>
+          </div>
+
+          <span
+            id="bathCleanlinessPoint"
+            class="detail-item-point"
+          >
+            0.000 / 1.000
+          </span>
+
+        </div>
+
+        <div class="star-rating-area">
+
+          <div
+            class="star-display"
+            aria-hidden="true"
+          >
+            <span class="star-background">
+              ★★★★★
+            </span>
+
+            <span
+              id="bathCleanlinessStarFill"
+              class="star-fill"
+            >
+              ★★★★★
+            </span>
+          </div>
+
+          <p
+            id="bathCleanlinessValue"
+            class="star-score-value"
+          >
+            未評価
+          </p>
+
+          <input
+            id="bathCleanlinessInput"
+            class="star-range"
+            type="range"
+            min="0"
+            max="5"
+            step="0.001"
+            value="0"
+            aria-label="お風呂の清潔感"
+          >
+
+          <button
+            class="clear-star-button"
+            type="button"
+            data-clear-score="cleanliness"
+          >
+            未評価に戻す
+          </button>
+
+        </div>
+
+      </section>
+
+      <!-- 泉質 -->
+      <section
+        id="springQualitySection"
+        class="detail-section star-score-section"
+      >
+
+        <div class="detail-section-heading">
+
+          <div>
+            <h2 class="detail-item-title">
+              泉質
+            </h2>
+
+            <p
+              id="springQualityDescription"
+              class="detail-item-description"
+            >
+              温泉の場合のみ評価
+            </p>
+          </div>
+
+          <span
+            id="springQualityPoint"
+            class="detail-item-point"
+          >
+            評価対象外
+          </span>
+
+        </div>
+
+        <div
+          id="springQualityRatingArea"
+          class="star-rating-area"
+        >
+
+          <div
+            class="star-display"
+            aria-hidden="true"
+          >
+            <span class="star-background">
+              ★★★★★
+            </span>
+
+            <span
+              id="springQualityStarFill"
+              class="star-fill"
+            >
+              ★★★★★
+            </span>
+          </div>
+
+          <p
+            id="springQualityValue"
+            class="star-score-value"
+          >
+            未評価
+          </p>
+
+          <input
+            id="springQualityInput"
+            class="star-range"
+            type="range"
+            min="0"
+            max="5"
+            step="0.001"
+            value="0"
+            aria-label="泉質の評価"
+            disabled
+          >
+
+          <button
+            id="clearSpringQuality"
+            class="clear-star-button"
+            type="button"
+            data-clear-score="spring-quality"
+            disabled
+          >
+            未評価に戻す
+          </button>
+
+        </div>
+
+        <div class="optional-record-box">
+
+          <label class="optional-record-label">
+            泉質の種類
+            <small>記録用・任意</small>
+          </label>
+
+          <select
+            id="springTypeInput"
+            class="detail-select"
+            disabled
+          >
+            <option value="">
+              選択しない
+            </option>
+
+            <option value="simple">
+              単純温泉
+            </option>
+
+            <option value="chloride">
+              塩化物泉
+            </option>
+
+            <option value="bicarbonate">
+              炭酸水素塩泉
+            </option>
+
+            <option value="sulfate">
+              硫酸塩泉
+            </option>
+
+            <option value="carbon-dioxide">
+              二酸化炭素泉
+            </option>
+
+            <option value="iron">
+              含鉄泉
+            </option>
+
+            <option value="sulfur">
+              硫黄泉
+            </option>
+
+            <option value="acidic">
+              酸性泉
+            </option>
+
+            <option value="radioactive">
+              放射能泉
+            </option>
+
+            <option value="other">
+              その他
+            </option>
+          </select>
+
+        </div>
+
+        <p
+          id="springQualityExcludedMessage"
+          class="excluded-message"
+        >
+          温泉なしの場合、泉質は総合計算から除外されます。
+        </p>
+
+      </section>
+
+      <!-- 景色・雰囲気 -->
+      <section class="detail-section star-score-section">
+
+        <div class="detail-section-heading">
+
+          <div>
+            <h2 class="detail-item-title">
+              景色・雰囲気
+            </h2>
+
+            <p class="detail-item-description">
+              眺望や浴場全体の雰囲気を評価
+            </p>
+          </div>
+
+          <span
+            id="bathAtmospherePoint"
+            class="detail-item-point"
+          >
+            0.000 / 1.000
+          </span>
+
+        </div>
+
+        <div class="star-rating-area">
+
+          <div
+            class="star-display"
+            aria-hidden="true"
+          >
+            <span class="star-background">
+              ★★★★★
+            </span>
+
+            <span
+              id="bathAtmosphereStarFill"
+              class="star-fill"
+            >
+              ★★★★★
+            </span>
+          </div>
+
+          <p
+            id="bathAtmosphereValue"
+            class="star-score-value"
+          >
+            未評価
+          </p>
+
+          <input
+            id="bathAtmosphereInput"
+            class="star-range"
+            type="range"
+            min="0"
+            max="5"
+            step="0.001"
+            value="0"
+            aria-label="景色と雰囲気の評価"
+          >
+
+          <button
+            class="clear-star-button"
+            type="button"
+            data-clear-score="atmosphere"
+          >
+            未評価に戻す
+          </button>
+
+        </div>
+
+      </section>
+
+      <!-- 備品 -->
+      <section class="detail-section star-score-section">
+
+        <div class="detail-section-heading">
+
+          <div>
+            <h2 class="detail-item-title">
+              備品
+            </h2>
+
+            <p class="detail-item-description">
+              タオル・ドライヤー・洗面用品などを評価
+            </p>
+          </div>
+
+          <span
+            id="bathSuppliesPoint"
+            class="detail-item-point"
+          >
+            0.000 / 1.000
+          </span>
+
+        </div>
+
+        <div class="star-rating-area">
+
+          <div
+            class="star-display"
+            aria-hidden="true"
+          >
+            <span class="star-background">
+              ★★★★★
+            </span>
+
+            <span
+              id="bathSuppliesStarFill"
+              class="star-fill"
+            >
+              ★★★★★
+            </span>
+          </div>
+
+          <p
+            id="bathSuppliesValue"
+            class="star-score-value"
+          >
+            未評価
+          </p>
+
+          <input
+            id="bathSuppliesInput"
+            class="star-range"
+            type="range"
+            min="0"
+            max="5"
+            step="0.001"
+            value="0"
+            aria-label="お風呂の備品の評価"
+          >
+
+          <button
+            class="clear-star-button"
+            type="button"
+            data-clear-score="supplies"
+          >
+            未評価に戻す
+          </button>
+
+        </div>
+
+      </section>
+
+      <p
+        id="bathFormMessage"
+        class="detail-form-message"
+        aria-live="polite"
+      ></p>
+
+      <button
+        id="saveBathEvaluation"
+        class="detail-save-button"
+        type="button"
+      >
+        この評価で確定
+      </button>
+
+    </form>
+
+  </main>
+
+  <script src="js/bath.js"></script>
+
+</body>
+</html>

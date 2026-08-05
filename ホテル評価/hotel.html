@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0"
+>
+
+<title>
+ホテル詳細 | Hotel Score Map
+</title>
+
+<link
+rel="stylesheet"
+href="css/style.css"
+>
+
+<link
+rel="stylesheet"
+href="css/hotel.css"
+>
+
+</head>
+
+<body>
+
+<header class="app-header">
+
+<h1
+id="hotelTitle"
+class="app-title"
+>
+
+ホテル詳細
+
+</h1>
+
+</header>
+
+<main class="main-content">
+
+<article class="hotel-detail">
+
+<div class="detail-toolbar">
+
+<button
+type="button"
+id="backButton"
+class="back-button"
+>
+
+‹ 戻る
+
+</button>
+
+<div class="detail-actions">
+
+<button
+type="button"
+id="editButton"
+class="edit-button"
+>
+
+編集
+
+</button>
+
+<button
+type="button"
+id="deleteButton"
+class="delete-button"
+>
+
+削除
+
+</button>
+
+</div>
+
+</div>
+
+<section class="overview-card">
+
+<div class="overview-main">
+
+<p
+id="hotelLocation"
+class="hotel-location"
+>
+
+所在地未登録
+
+</p>
+
+<p
+id="hotelStayDate"
+class="hotel-stay-date"
+>
+
+宿泊日未登録
+
+</p>
+
+</div>
+
+<div class="overview-score">
+
+<p class="score-label">
+総合評価
+</p>
+
+<p
+id="hotelScore"
+class="hotel-score-large"
+>
+
+---
+
+</p>
+
+<div
+id="hotelRank"
+class="hotel-rank rank-unset"
+>
+
+未評価
+
+</div>
+
+</div>
+
+</section>
+
+<section class="score-detail-section">
+
+<h2>
+評価内訳
+</h2>
+
+<div class="score-detail-list">
+
+<div class="score-detail-item">
+<span>客室・アメニティ</span>
+<strong id="scoreRoom">未評価</strong>
+</div>
+
+<div class="score-detail-item">
+<span>接客・サービス</span>
+<strong id="scoreService">未評価</strong>
+</div>
+
+<div class="score-detail-item">
+<span>バス・お風呂</span>
+<strong id="scoreBath">未評価</strong>
+</div>
+
+<div class="score-detail-item">
+<span>施設・設備</span>
+<strong id="scoreFacility">未評価</strong>
+</div>
+
+<div class="score-detail-item">
+<span>お食事</span>
+<strong id="scoreMeal">未評価</strong>
+</div>
+
+<div class="score-detail-item">
+<span>満足度</span>
+<strong id="scoreSatisfaction">未評価</strong>
+</div>
+
+</div>
+
+</section>
+
+<section class="repeat-detail-section">
+
+<h2>
+リピートポイント
+</h2>
+
+<div class="repeat-detail-grid">
+
+<div>
+
+<span class="detail-label">
+通常評価
+</span>
+
+<strong id="normalScore">
+---
+</strong>
+
+</div>
+
+<div>
+
+<span class="detail-label">
+加点
+</span>
+
+<strong id="repeatPoint">
++0.000
+</strong>
+
+</div>
+
+<div>
+
+<span class="detail-label">
+種別
+</span>
+
+<strong id="repeatType">
+なし
+</strong>
+
+</div>
+
+</div>
+
+</section>
+
+</article>
+
+</main>
+
+<nav class="bottom-nav">
+
+<a
+href="index.html"
+class="nav-item"
+>
+
+<span class="nav-icon">
+⌂
+</span>
+
+<span class="nav-label">
+ホーム
+</span>
+
+</a>
+
+<a
+href="list.html"
+class="nav-item active"
+>
+
+<span class="nav-icon">
+≡
+</span>
+
+<span class="nav-label">
+一覧
+</span>
+
+</a>
+
+<a
+href="add.html"
+class="nav-item"
+>
+
+<span class="nav-icon">
+＋
+</span>
+
+<span class="nav-label">
+評価追加
+</span>
+
+</a>
+
+</nav>
+
+<dialog
+id="deleteDialog"
+class="delete-dialog"
+>
+
+<form method="dialog">
+
+<h2>
+この評価を削除しますか？
+</h2>
+
+<p>
+削除したデータは元に戻せません。
+</p>
+
+<div class="delete-dialog-actions">
+
+<button
+type="submit"
+value="cancel"
+class="cancel-button"
+>
+
+キャンセル
+
+</button>
+
+<button
+type="button"
+id="confirmDeleteButton"
+class="confirm-delete-button"
+>
+
+削除する
+
+</button>
+
+</div>
+
+</form>
+
+</dialog>
+
+<script src="js/hotel.js"></script>
+
+</body>
+
+</html>

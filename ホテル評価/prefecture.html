@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>都道府県別ホテル一覧 | Hotel Score Map</title>
+
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/prefecture.css">
+</head>
+
+<body>
+
+  <header class="app-header">
+    <h1
+      id="prefectureTitle"
+      class="app-title"
+    >
+      都道府県
+    </h1>
+  </header>
+
+  <main class="main-content">
+
+    <section class="prefecture-page">
+
+      <div class="prefecture-toolbar">
+
+        <a
+          href="list.html"
+          class="back-link"
+        >
+          ‹ 都道府県一覧
+        </a>
+
+        <div class="toolbar-right">
+
+          <label
+            for="sortSelect"
+            class="sort-label"
+          >
+            並び替え
+          </label>
+
+          <select
+            id="sortSelect"
+            class="sort-select"
+          >
+            <option value="score-desc">
+              最新評価が高い順
+            </option>
+
+            <option value="score-asc">
+              最新評価が低い順
+            </option>
+
+            <option value="date-desc">
+              最新宿泊日が新しい順
+            </option>
+
+            <option value="date-asc">
+              最新宿泊日が古い順
+            </option>
+
+            <option value="count-desc">
+              宿泊回数が多い順
+            </option>
+
+            <option value="rank">
+              ランク順
+            </option>
+
+            <option value="name">
+              ホテル名順
+            </option>
+          </select>
+
+          <span
+            id="hotelCount"
+            class="hotel-count"
+          >
+            0施設
+          </span>
+
+        </div>
+
+      </div>
+
+      <div
+        id="hotelList"
+        class="hotel-list"
+        aria-live="polite"
+      >
+        <p class="empty-message">
+          ホテル情報を読み込んでいます
+        </p>
+      </div>
+
+    </section>
+
+  </main>
+
+  <nav class="bottom-nav">
+
+    <a
+      href="index.html"
+      class="nav-item"
+    >
+      <span class="nav-icon">
+        ⌂
+      </span>
+
+      <span class="nav-label">
+        ホーム
+      </span>
+    </a>
+
+    <a
+      href="list.html"
+      class="nav-item active"
+    >
+      <span class="nav-icon">
+        ≡
+      </span>
+
+      <span class="nav-label">
+        一覧
+      </span>
+    </a>
+
+    <a
+      href="add.html"
+      class="nav-item"
+    >
+      <span class="nav-icon">
+        ＋
+      </span>
+
+      <span class="nav-label">
+        評価追加
+      </span>
+    </a>
+
+  </nav>
+
+  <script src="js/prefecture.js"></script>
+
+</body>
+</html>

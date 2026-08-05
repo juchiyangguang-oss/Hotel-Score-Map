@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>ホテル・地域検索 | Hotel Score Map</title>
+
+  <link
+    rel="stylesheet"
+    href="css/style.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="css/list.css"
+  >
+
+</head>
+
+<body>
+
+<header class="app-header">
+
+<h1 class="app-title">
+ホテル・地域検索
+</h1>
+
+</header>
+
+<main class="main-content">
+
+<section class="list-page">
+
+<div class="search-panel">
+
+<label
+for="hotelSearch"
+class="search-label"
+>
+
+ホテル名・地域・住所を検索
+
+</label>
+
+<div class="search-row">
+
+<input
+type="search"
+id="hotelSearch"
+class="search-input"
+placeholder="例：天童、湯田中、長野県"
+autocomplete="off"
+>
+
+<button
+type="button"
+id="clearSearchButton"
+class="clear-search-button"
+>
+
+クリア
+
+</button>
+
+</div>
+
+<p
+id="searchStatus"
+class="search-status"
+aria-live="polite"
+>
+
+ホテル名・地域・住所から検索できます
+
+</p>
+
+</div>
+
+<section
+id="searchResultSection"
+class="search-result-section"
+hidden
+>
+
+<div class="section-heading-row">
+
+<h2>
+検索結果
+</h2>
+
+<span
+id="searchResultCount"
+class="result-count"
+>
+
+0施設
+
+</span>
+
+</div>
+
+<div
+id="hotelSearchResults"
+class="hotel-search-results"
+></div>
+
+</section>
+
+<section
+id="prefectureSection"
+class="prefecture-section"
+>
+
+<div class="section-heading-row">
+
+<h2>
+都道府県から選ぶ
+</h2>
+
+<span
+id="prefectureHotelCount"
+class="result-count"
+>
+
+0件
+
+</span>
+
+</div>
+
+<div
+id="prefList"
+class="pref-list"
+aria-live="polite"
+></div>
+
+</section>
+
+</section>
+
+</main>
+
+<nav class="bottom-nav">
+
+<a
+href="index.html"
+class="nav-item"
+>
+
+<span class="nav-icon">
+⌂
+</span>
+
+<span class="nav-label">
+ホーム
+</span>
+
+</a>
+
+<a
+href="list.html"
+class="nav-item active"
+>
+
+<span class="nav-icon">
+≡
+</span>
+
+<span class="nav-label">
+一覧
+</span>
+
+</a>
+
+<a
+href="add.html"
+class="nav-item"
+>
+
+<span class="nav-icon">
+＋
+</span>
+
+<span class="nav-label">
+評価追加
+</span>
+
+</a>
+
+</nav>
+
+<script src="js/list.js"></script>
+
+</body>
+
+</html>
