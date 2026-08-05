@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>お食事 | Hotel Score Map</title>
+
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/evaluation-detail.css">
+</head>
+
+<body>
+
+  <header class="app-header detail-header">
+
+    <button
+      id="backButton"
+      class="back-button"
+      type="button"
+      aria-label="評価追加画面へ戻る"
+    >
+      ＜
+    </button>
+
+    <h1 class="app-title">
+      お食事
+    </h1>
+
+    <div class="header-spacer"></div>
+
+  </header>
+
+  <main class="main-content detail-main">
+
+    <form
+      id="mealEvaluationForm"
+      class="detail-form"
+      novalidate
+    >
+
+      <!-- 合計評価 -->
+      <section class="detail-score-card">
+
+        <p class="detail-score-label">
+          お食事
+        </p>
+
+        <p
+          id="mealTotalScore"
+          class="detail-score-value"
+          aria-live="polite"
+        >
+          ☆―.―――
+        </p>
+
+        <p
+          id="mealScoreMax"
+          class="detail-score-max"
+        >
+          5.000点満点
+        </p>
+
+      </section>
+
+      <!-- 食事の有無 -->
+      <section class="detail-section meal-plan-section">
+
+        <div class="detail-section-heading">
+
+          <div>
+            <h2 class="detail-item-title">
+              食事プラン
+            </h2>
+
+            <p class="detail-item-description">
+              宿泊時に利用した食事を選択
+            </p>
+          </div>
+
+          <span
+            id="mealPlanStatus"
+            class="detail-item-point"
+          >
+            未選択
+          </span>
+
+        </div>
+
+        <div class="choice-list">
+
+          <label class="choice-option">
+
+            <input
+              type="radio"
+              name="mealPlan"
+              value="dinner-breakfast"
+            >
+
+            <span>
+              夕食・朝食あり
+              <small>5項目を評価</small>
+            </span>
+
+          </label>
+
+          <label class="choice-option">
+
+            <input
+              type="radio"
+              name="mealPlan"
+              value="dinner-only"
+            >
+
+            <span>
+              夕食のみ
+              <small>朝食は評価対象外</small>
+            </span>
+
+          </label>
+
+          <label class="choice-option">
+
+            <input
+              type="radio"
+              name="mealPlan"
+              value="breakfast-only"
+            >
+
+            <span>
+              朝食のみ
+              <small>夕食は評価対象外</small>
+            </span>
+
+          </label>
+
+          <label class="choice-option">
+
+            <input
+              type="radio"
+              name="mealPlan"
+              value="none"
+            >
+
+            <span>
+              食事なし
+              <small>お食事全体を評価対象外</small>
+            </span>
+
+          </label>
+
+        </div>
+
+        <p
+          id="mealExcludedMessage"
+          class="excluded-message is-hidden"
+        >
+          食事なしの場合、お食事は0点ではなく評価対象外となり、総合評価の平均計算から除外されます。
+        </p>
+
+      </section>
+
+      <!-- 夕食 -->
+      <section
+        id="dinnerSection"
+        class="detail-section star-score-section"
+      >
+
+        <div class="detail-section-heading">
+
+          <div>
+            <h2 class="detail-item-title">
+              夕食
+            </h2>
+
+            <p
+              id="dinnerDescription"
+              class="detail-item-description"
+            >
+              夕食全体の内容を評価
+            </p>
+          </div>
+
+          <span
+            id="dinnerPoint"
+            class="detail-item-point"
+          >
+            0.000 / 1.000
+          </span>
+
+        </div>
+
+        <div class="star-rating-area">
+
+          <div
+            class="star-display"
+            aria-hidden="true"
+          >
+            <span class="star-background">
+              ★★★★★
+            </span>
+
+            <span
+              id="dinnerStarFill"
+              class="star-fill"
+            >
+              ★★★★★
+            </span>
+          </div>
+
+          <p
+            id="dinnerValue"
+            class="star-score-value"
+          >
+            未評価
+          </p>
+
+          <input
+            id="dinnerInput"
+            class="star-range"
+            type="range"
+            min="0"
+            max="5"
+            step="0.001"
+            value="0"
+            aria-label="夕食の評価"
+            disabled
+          >
+
+          <button
+            id="clearDinnerScore"
+            class="clear-star-button"
+            type="button"
+            data-clear-score="dinner"
+            disabled
+          >
+            未評価に戻す
+          </button>
+
+        </div>
+
+      </section>
+
+      <!-- 朝食 -->
+      <section
+        id="breakfastSection"
+        class="detail-section star-score-section"
+      >
+
+        <div class="detail-section-heading">
+
+          <div>
+            <h2 class="detail-item-title">
+              朝食
+            </h2>
+
+            <p
+              id="breakfastDescription"
+              class="detail-item-description"
+            >
+              朝食全体の内容を評価
+            </p>
+          </div>
+
+          <span
+            id="breakfastPoint"
+            class="detail-item-point"
+          >
+            0.000 / 1.000
+          </span>
+
+        </div>
+
+        <div class="star-rating-area">
+
+          <div
+            class="star-display"
+            aria-hidden="true"
+          >
+            <span class="star-background">
+              ★★★★★
+            </span>
+
+            <span
+              id="breakfastStarFill"
+              class="star-fill"
+            >
+              ★★★★★
+            </span>
+          </div>
+
+          <p
+            id="breakfastValue"
+            class="star-score-value"
+          >
+            未評価
+          </p>
+
+          <input
+            id="breakfastInput"
+            class="star-range"
+            type="range"
+            min="0"
+            max="5"
+            step="0.001"
+            value="0"
+            aria-label="朝食の評価"
+            disabled
+          >
+
+          <button
+            id="clearBreakfastScore"
+            class="clear-star-button"
+            type="button"
+            data-clear-score="breakfast"
+            disabled
+          >
+            未評価に戻す
+          </button>
+
+        </div>
+
+      </section>
+
+      <!-- 味 -->
+      <section
+        id="tasteSection"
+        class="detail-section star-score-section"
+      >
+
+        <div class="detail-section-heading">
+
+          <div>
+            <h2 class="detail-item-title">
+              味
+            </h2>
+
+            <p class="detail-item-description">
+              料理全体のおいしさを評価
+            </p>
+          </div>
+
+          <span
+            id="tastePoint"
+            class="detail-item-point"
+          >
+            0.000 / 1.000
+          </span>
+
+        </div>
+
+        <div class="star-rating-area">
+
+          <div
+            class="star-display"
+            aria-hidden="true"
+          >
+            <span class="star-background">
+              ★★★★★
+            </span>
+
+            <span
+              id="tasteStarFill"
+              class="star-fill"
+            >
+              ★★★★★
+            </span>
+          </div>
+
+          <p
+            id="tasteValue"
+            class="star-score-value"
+          >
+            未評価
+          </p>
+
+          <input
+            id="tasteInput"
+            class="star-range"
+            type="range"
+            min="0"
+            max="5"
+            step="0.001"
+            value="0"
+            aria-label="味の評価"
+            disabled
+          >
+
+          <button
+            id="clearTasteScore"
+            class="clear-star-button"
+            type="button"
+            data-clear-score="taste"
+            disabled
+          >
+            未評価に戻す
+          </button>
+
+        </div>
+
+      </section>
+
+      <!-- 品数・量 -->
+      <section
+        id="quantitySection"
+        class="detail-section star-score-section"
+      >
+
+        <div class="detail-section-heading">
+
+          <div>
+            <h2 class="detail-item-title">
+              品数・量
+            </h2>
+
+            <p class="detail-item-description">
+              品数や料理の量、満足感を評価
+            </p>
+          </div>
+
+          <span
+            id="quantityPoint"
+            class="detail-item-point"
+          >
+            0.000 / 1.000
+          </span>
+
+        </div>
+
+        <div class="star-rating-area">
+
+          <div
+            class="star-display"
+            aria-hidden="true"
+          >
+            <span class="star-background">
+              ★★★★★
+            </span>
+
+            <span
+              id="quantityStarFill"
+              class="star-fill"
+            >
+              ★★★★★
+            </span>
+          </div>
+
+          <p
+            id="quantityValue"
+            class="star-score-value"
+          >
+            未評価
+          </p>
+
+          <input
+            id="quantityInput"
+            class="star-range"
+            type="range"
+            min="0"
+            max="5"
+            step="0.001"
+            value="0"
+            aria-label="品数と量の評価"
+            disabled
+          >
+
+          <button
+            id="clearQuantityScore"
+            class="clear-star-button"
+            type="button"
+            data-clear-score="quantity"
+            disabled
+          >
+            未評価に戻す
+          </button>
+
+        </div>
+
+      </section>
+
+      <!-- 接客 -->
+      <section
+        id="mealServiceSection"
+        class="detail-section star-score-section"
+      >
+
+        <div class="detail-section-heading">
+
+          <div>
+            <h2 class="detail-item-title">
+              接客
+            </h2>
+
+            <p class="detail-item-description">
+              配膳や説明、食事会場での対応を評価
+            </p>
+          </div>
+
+          <span
+            id="mealServicePoint"
+            class="detail-item-point"
+          >
+            0.000 / 1.000
+          </span>
+
+        </div>
+
+        <div class="star-rating-area">
+
+          <div
+            class="star-display"
+            aria-hidden="true"
+          >
+            <span class="star-background">
+              ★★★★★
+            </span>
+
+            <span
+              id="mealServiceStarFill"
+              class="star-fill"
+            >
+              ★★★★★
+            </span>
+          </div>
+
+          <p
+            id="mealServiceValue"
+            class="star-score-value"
+          >
+            未評価
+          </p>
+
+          <input
+            id="mealServiceInput"
+            class="star-range"
+            type="range"
+            min="0"
+            max="5"
+            step="0.001"
+            value="0"
+            aria-label="食事時の接客評価"
+            disabled
+          >
+
+          <button
+            id="clearMealServiceScore"
+            class="clear-star-button"
+            type="button"
+            data-clear-score="service"
+            disabled
+          >
+            未評価に戻す
+          </button>
+
+        </div>
+
+      </section>
+
+      <p
+        id="mealFormMessage"
+        class="detail-form-message"
+        aria-live="polite"
+      ></p>
+
+      <button
+        id="saveMealEvaluation"
+        class="detail-save-button"
+        type="button"
+      >
+        この評価で確定
+      </button>
+
+    </form>
+
+  </main>
+
+  <script src="js/meal.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>宿泊履歴 | Hotel Score Map</title>
+
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/hotel-history.css">
+</head>
+
+<body>
+
+  <header class="app-header">
+    <h1
+      id="historyTitle"
+      class="app-title"
+    >
+      宿泊履歴
+    </h1>
+  </header>
+
+  <main class="main-content">
+
+    <article class="history-page">
+
+      <div class="history-toolbar">
+
+        <button
+          type="button"
+          id="backButton"
+          class="back-button"
+        >
+          ‹ ホテル一覧
+        </button>
+
+        <span
+          id="stayCount"
+          class="stay-count"
+        >
+          0回
+        </span>
+
+      </div>
+
+      <section class="hotel-summary-card">
+
+        <div class="hotel-summary-main">
+
+          <h2
+            id="hotelName"
+            class="history-hotel-name"
+          >
+            ホテル名
+          </h2>
+
+          <p
+            id="hotelAddress"
+            class="history-hotel-address"
+          >
+            所在地未登録
+          </p>
+
+        </div>
+
+        <div class="latest-score-area">
+
+          <span class="latest-score-label">
+            最新評価
+          </span>
+
+          <strong
+            id="latestScore"
+            class="latest-score"
+          >
+            ---
+          </strong>
+
+          <div
+            id="latestRank"
+            class="latest-rank rank-unset"
+          >
+            未評価
+          </div>
+
+        </div>
+
+      </section>
+
+      <section class="history-section">
+
+        <div class="history-section-header">
+
+          <h2>
+            宿泊履歴
+          </h2>
+
+          <label
+            for="historySort"
+            class="history-sort-label"
+          >
+            並び替え
+          </label>
+
+          <select
+            id="historySort"
+            class="history-sort"
+          >
+            <option value="date-desc">
+              宿泊日が新しい順
+            </option>
+
+            <option value="date-asc">
+              宿泊日が古い順
+            </option>
+
+            <option value="score-desc">
+              評価が高い順
+            </option>
+
+            <option value="score-asc">
+              評価が低い順
+            </option>
+          </select>
+
+        </div>
+
+        <div
+          id="historyList"
+          class="history-list"
+          aria-live="polite"
+        >
+          <p class="empty-message">
+            宿泊履歴を読み込んでいます
+          </p>
+        </div>
+
+      </section>
+
+    </article>
+
+  </main>
+
+  <nav class="bottom-nav">
+
+    <a
+      href="index.html"
+      class="nav-item"
+    >
+      <span class="nav-icon">
+        ⌂
+      </span>
+
+      <span class="nav-label">
+        ホーム
+      </span>
+    </a>
+
+    <a
+      href="list.html"
+      class="nav-item active"
+    >
+      <span class="nav-icon">
+        ≡
+      </span>
+
+      <span class="nav-label">
+        一覧
+      </span>
+    </a>
+
+    <a
+      href="add.html"
+      class="nav-item"
+    >
+      <span class="nav-icon">
+        ＋
+      </span>
+
+      <span class="nav-label">
+        評価追加
+      </span>
+    </a>
+
+  </nav>
+
+  <script src="js/hotel-history.js"></script>
+
+</body>
+</html>

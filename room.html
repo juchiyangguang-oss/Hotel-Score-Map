@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>客室・アメニティ | Hotel Score Map</title>
+
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/evaluation-detail.css">
+</head>
+
+<body>
+
+  <header class="app-header detail-header">
+
+    <button
+      id="backButton"
+      class="back-button"
+      type="button"
+      aria-label="評価追加画面へ戻る"
+    >
+      ＜
+    </button>
+
+    <h1 class="app-title">
+      客室・アメニティ
+    </h1>
+
+    <div class="header-spacer"></div>
+
+  </header>
+
+  <main class="main-content detail-main">
+
+    <form
+      id="roomEvaluationForm"
+      class="detail-form"
+      novalidate
+    >
+
+      <!-- 合計評価 -->
+      <section class="detail-score-card">
+
+        <p class="detail-score-label">
+          客室・アメニティ
+        </p>
+
+        <p
+          id="roomTotalScore"
+          class="detail-score-value"
+          aria-live="polite"
+        >
+          ☆―.―――
+        </p>
+
+        <p class="detail-score-max">
+          5.000点満点
+        </p>
+
+      </section>
+
+      <!-- 客室の広さ -->
+      <section class="detail-section room-size-section">
+
+        <div class="detail-section-heading">
+
+          <div>
+            <h2 class="detail-item-title">
+              客室の広さ
+            </h2>
+
+            <p class="detail-item-description">
+              おおよその面積を入力
+            </p>
+          </div>
+
+          <span
+            id="roomSizePoint"
+            class="detail-item-point"
+          >
+            0.000 / 1.000
+          </span>
+
+        </div>
+
+        <label class="number-input-row">
+
+          <input
+            id="roomSizeInput"
+            class="detail-number-input"
+            type="number"
+            min="0"
+            step="0.1"
+            inputmode="decimal"
+            placeholder="例：72"
+          >
+
+          <span class="number-input-unit">
+            ㎡
+          </span>
+
+        </label>
+
+        <div class="score-rule-box">
+          <p>20㎡未満：0.200点</p>
+          <p>20㎡以上40㎡未満：0.400点</p>
+          <p>40㎡以上60㎡未満：0.600点</p>
+          <p>60㎡以上80㎡未満：0.800点</p>
+          <p>80㎡以上：1.000点</p>
+        </div>
+
+      </section>
+
+      <!-- 清潔感・設備 -->
+      <section
+        class="detail-section star-score-section"
+        data-score-section="cleanliness"
+      >
+
+        <div class="detail-section-heading">
+
+          <div>
+            <h2 class="detail-item-title">
+              清潔感・設備
+            </h2>
+
+            <p class="detail-item-description">
+              星を左右に動かして評価
+            </p>
+          </div>
+
+          <span
+            id="cleanlinessPoint"
+            class="detail-item-point"
+          >
+            0.000 / 1.000
+          </span>
+
+        </div>
+
+        <div class="star-rating-area">
+
+          <div
+            class="star-display"
+            aria-hidden="true"
+          >
+            <span class="star-background">
+              ★★★★★
+            </span>
+
+            <span
+              id="cleanlinessStarFill"
+              class="star-fill"
+            >
+              ★★★★★
+            </span>
+          </div>
+
+          <p
+            id="cleanlinessValue"
+            class="star-score-value"
+          >
+            未評価
+          </p>
+
+          <input
+            id="cleanlinessInput"
+            class="star-range"
+            type="range"
+            min="0"
+            max="5"
+            step="0.001"
+            value="0"
+            aria-label="清潔感・設備の評価"
+          >
+
+          <button
+            class="clear-star-button"
+            type="button"
+            data-clear-score="cleanliness"
+          >
+            未評価に戻す
+          </button>
+
+        </div>
+
+      </section>
+
+      <!-- 寝具類 -->
+      <section
+        class="detail-section star-score-section"
+        data-score-section="bedding"
+      >
+
+        <div class="detail-section-heading">
+
+          <div>
+            <h2 class="detail-item-title">
+              寝具類
+            </h2>
+
+            <p class="detail-item-description">
+              星を左右に動かして評価
+            </p>
+          </div>
+
+          <span
+            id="beddingPoint"
+            class="detail-item-point"
+          >
+            0.000 / 1.000
+          </span>
+
+        </div>
+
+        <div class="star-rating-area">
+
+          <div
+            class="star-display"
+            aria-hidden="true"
+          >
+            <span class="star-background">
+              ★★★★★
+            </span>
+
+            <span
+              id="beddingStarFill"
+              class="star-fill"
+            >
+              ★★★★★
+            </span>
+          </div>
+
+          <p
+            id="beddingValue"
+            class="star-score-value"
+          >
+            未評価
+          </p>
+
+          <input
+            id="beddingInput"
+            class="star-range"
+            type="range"
+            min="0"
+            max="5"
+            step="0.001"
+            value="0"
+            aria-label="寝具類の評価"
+          >
+
+          <button
+            class="clear-star-button"
+            type="button"
+            data-clear-score="bedding"
+          >
+            未評価に戻す
+          </button>
+
+        </div>
+
+      </section>
+
+      <!-- 客室からの景色 -->
+      <section
+        class="detail-section star-score-section"
+        data-score-section="view"
+      >
+
+        <div class="detail-section-heading">
+
+          <div>
+            <h2 class="detail-item-title">
+              客室からの景色
+            </h2>
+
+            <p class="detail-item-description">
+              星を左右に動かして評価
+            </p>
+          </div>
+
+          <span
+            id="viewPoint"
+            class="detail-item-point"
+          >
+            0.000 / 1.000
+          </span>
+
+        </div>
+
+        <div class="star-rating-area">
+
+          <div
+            class="star-display"
+            aria-hidden="true"
+          >
+            <span class="star-background">
+              ★★★★★
+            </span>
+
+            <span
+              id="viewStarFill"
+              class="star-fill"
+            >
+              ★★★★★
+            </span>
+          </div>
+
+          <p
+            id="viewValue"
+            class="star-score-value"
+          >
+            未評価
+          </p>
+
+          <input
+            id="viewInput"
+            class="star-range"
+            type="range"
+            min="0"
+            max="5"
+            step="0.001"
+            value="0"
+            aria-label="客室からの景色の評価"
+          >
+
+          <button
+            class="clear-star-button"
+            type="button"
+            data-clear-score="view"
+          >
+            未評価に戻す
+          </button>
+
+        </div>
+
+      </section>
+
+      <!-- アメニティ -->
+      <section
+        class="detail-section star-score-section"
+        data-score-section="amenity"
+      >
+
+        <div class="detail-section-heading">
+
+          <div>
+            <h2 class="detail-item-title">
+              アメニティ
+            </h2>
+
+            <p class="detail-item-description">
+              星を左右に動かして評価
+            </p>
+          </div>
+
+          <span
+            id="amenityPoint"
+            class="detail-item-point"
+          >
+            0.000 / 1.000
+          </span>
+
+        </div>
+
+        <div class="star-rating-area">
+
+          <div
+            class="star-display"
+            aria-hidden="true"
+          >
+            <span class="star-background">
+              ★★★★★
+            </span>
+
+            <span
+              id="amenityStarFill"
+              class="star-fill"
+            >
+              ★★★★★
+            </span>
+          </div>
+
+          <p
+            id="amenityValue"
+            class="star-score-value"
+          >
+            未評価
+          </p>
+
+          <input
+            id="amenityInput"
+            class="star-range"
+            type="range"
+            min="0"
+            max="5"
+            step="0.001"
+            value="0"
+            aria-label="アメニティの評価"
+          >
+
+          <button
+            class="clear-star-button"
+            type="button"
+            data-clear-score="amenity"
+          >
+            未評価に戻す
+          </button>
+
+        </div>
+
+      </section>
+
+      <p
+        id="roomFormMessage"
+        class="detail-form-message"
+        aria-live="polite"
+      ></p>
+
+      <button
+        id="saveRoomEvaluation"
+        class="detail-save-button"
+        type="button"
+      >
+        この評価で確定
+      </button>
+
+    </form>
+
+  </main>
+
+  <script src="js/room.js"></script>
+
+</body>
+</html>

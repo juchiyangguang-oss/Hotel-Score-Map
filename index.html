@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Hotel Score Map</title>
+
+  <!-- Leaflet -->
+
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  >
+
+  <link
+    rel="stylesheet"
+    href="css/style.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="css/home.css"
+  >
+
+</head>
+
+<body>
+
+<header class="app-header">
+
+<h1 class="app-title">
+Hotel Score Map
+</h1>
+
+</header>
+
+<main class="main-content">
+
+<section class="home-page">
+
+<div class="map-header">
+
+<div>
+
+<p class="map-heading">
+宿泊施設マップ
+</p>
+
+<p class="map-description">
+登録したホテル・旅館の位置を表示します
+</p>
+
+</div>
+
+<button
+type="button"
+id="resetMapButton"
+class="reset-map-button"
+>
+
+全国表示
+
+</button>
+
+</div>
+
+<div
+id="hotelMap"
+class="hotel-map"
+aria-label="登録済みホテルの地図"
+></div>
+
+<div class="home-summary">
+
+<div class="summary-item">
+
+<span class="summary-label">
+宿泊記録
+</span>
+
+<strong
+id="registeredHotelCount"
+class="summary-value"
+>
+0件
+</strong>
+
+</div>
+
+<div class="summary-item">
+
+<span class="summary-label">
+登録施設
+</span>
+
+<strong
+id="displayedPinCount"
+class="summary-value"
+>
+0施設
+</strong>
+
+</div>
+
+</div>
+
+<p
+id="mapStatus"
+class="map-status"
+aria-live="polite"
+>
+
+地図を準備しています
+
+</p>
+
+</section>
+
+</main>
+
+<nav class="bottom-nav">
+
+<a
+href="index.html"
+class="nav-item active"
+>
+
+<span class="nav-icon">
+⌂
+</span>
+
+<span class="nav-label">
+ホーム
+</span>
+
+</a>
+
+<a
+href="list.html"
+class="nav-item"
+>
+
+<span class="nav-icon">
+≡
+</span>
+
+<span class="nav-label">
+一覧
+</span>
+
+</a>
+
+<a
+href="add.html"
+class="nav-item"
+>
+
+<span class="nav-icon">
+＋
+</span>
+
+<span class="nav-label">
+評価追加
+</span>
+
+</a>
+
+</nav>
+
+<script
+src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+crossorigin=""
+></script>
+
+<script src="js/home.js"></script>
+
+</body>
+
+</html>

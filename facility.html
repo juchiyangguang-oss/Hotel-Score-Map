@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>施設・設備 | Hotel Score Map</title>
+
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/evaluation-detail.css">
+</head>
+
+<body>
+
+  <header class="app-header detail-header">
+
+    <button
+      id="backButton"
+      class="back-button"
+      type="button"
+      aria-label="評価追加画面へ戻る"
+    >
+      ＜
+    </button>
+
+    <h1 class="app-title">
+      施設・設備
+    </h1>
+
+    <div class="header-spacer"></div>
+
+  </header>
+
+  <main class="main-content detail-main">
+
+    <form
+      id="facilityEvaluationForm"
+      class="detail-form"
+      novalidate
+    >
+
+      <!-- 合計評価 -->
+      <section class="detail-score-card">
+
+        <p class="detail-score-label">
+          施設・設備
+        </p>
+
+        <p
+          id="facilityTotalScore"
+          class="detail-score-value"
+          aria-live="polite"
+        >
+          ☆―.―――
+        </p>
+
+        <p class="detail-score-max">
+          5.000点満点
+        </p>
+
+      </section>
+
+      <!-- 清潔感 -->
+      <section class="detail-section star-score-section">
+
+        <div class="detail-section-heading">
+
+          <div>
+            <h2 class="detail-item-title">
+              清潔感
+            </h2>
+
+            <p class="detail-item-description">
+              館内全体の清潔感を評価
+            </p>
+          </div>
+
+          <span
+            id="facilityCleanlinessPoint"
+            class="detail-item-point"
+          >
+            0.000 / 1.000
+          </span>
+
+        </div>
+
+        <div class="star-rating-area">
+
+          <div
+            class="star-display"
+            aria-hidden="true"
+          >
+            <span class="star-background">
+              ★★★★★
+            </span>
+
+            <span
+              id="facilityCleanlinessStarFill"
+              class="star-fill"
+            >
+              ★★★★★
+            </span>
+          </div>
+
+          <p
+            id="facilityCleanlinessValue"
+            class="star-score-value"
+          >
+            未評価
+          </p>
+
+          <input
+            id="facilityCleanlinessInput"
+            class="star-range"
+            type="range"
+            min="0"
+            max="5"
+            step="0.001"
+            value="0"
+            aria-label="施設の清潔感"
+          >
+
+          <button
+            class="clear-star-button"
+            type="button"
+            data-clear-score="cleanliness"
+          >
+            未評価に戻す
+          </button>
+
+        </div>
+
+      </section>
+
+      <!-- ラウンジ・ロビー -->
+      <section class="detail-section star-score-section">
+
+        <div class="detail-section-heading">
+
+          <div>
+            <h2 class="detail-item-title">
+              ラウンジ・ロビー
+            </h2>
+
+            <p class="detail-item-description">
+              広さ・雰囲気・快適性などを評価
+            </p>
+          </div>
+
+          <span
+            id="loungePoint"
+            class="detail-item-point"
+          >
+            0.000 / 1.000
+          </span>
+
+        </div>
+
+        <div class="star-rating-area">
+
+          <div
+            class="star-display"
+            aria-hidden="true"
+          >
+            <span class="star-background">
+              ★★★★★
+            </span>
+
+            <span
+              id="loungeStarFill"
+              class="star-fill"
+            >
+              ★★★★★
+            </span>
+          </div>
+
+          <p
+            id="loungeValue"
+            class="star-score-value"
+          >
+            未評価
+          </p>
+
+          <input
+            id="loungeInput"
+            class="star-range"
+            type="range"
+            min="0"
+            max="5"
+            step="0.001"
+            value="0"
+            aria-label="ラウンジとロビーの評価"
+          >
+
+          <button
+            class="clear-star-button"
+            type="button"
+            data-clear-score="lounge"
+          >
+            未評価に戻す
+          </button>
+
+        </div>
+
+      </section>
+
+      <!-- 売店 -->
+      <section class="detail-section shop-section">
+
+        <div class="detail-section-heading">
+
+          <div>
+            <h2 class="detail-item-title">
+              売店
+            </h2>
+
+            <p class="detail-item-description">
+              売店の有無と品揃えを評価
+            </p>
+          </div>
+
+          <span
+            id="shopPoint"
+            class="detail-item-point"
+          >
+            0.000 / 1.000
+          </span>
+
+        </div>
+
+        <div class="choice-list">
+
+          <label class="choice-option">
+
+            <input
+              type="radio"
+              name="shopAvailability"
+              value="available"
+            >
+
+            <span>
+              売店あり
+              <small>星評価を入力</small>
+            </span>
+
+          </label>
+
+          <label class="choice-option">
+
+            <input
+              type="radio"
+              name="shopAvailability"
+              value="none"
+            >
+
+            <span>
+              売店なし
+              <small>0.500点</small>
+            </span>
+
+          </label>
+
+        </div>
+
+        <div
+          id="shopRatingArea"
+          class="star-rating-area facility-conditional-area"
+        >
+
+          <div
+            class="star-display"
+            aria-hidden="true"
+          >
+            <span class="star-background">
+              ★★★★★
+            </span>
+
+            <span
+              id="shopStarFill"
+              class="star-fill"
+            >
+              ★★★★★
+            </span>
+          </div>
+
+          <p
+            id="shopValue"
+            class="star-score-value"
+          >
+            未評価
+          </p>
+
+          <input
+            id="shopInput"
+            class="star-range"
+            type="range"
+            min="0"
+            max="5"
+            step="0.001"
+            value="0"
+            aria-label="売店の評価"
+            disabled
+          >
+
+          <button
+            id="clearShopScore"
+            class="clear-star-button"
+            type="button"
+            data-clear-score="shop"
+            disabled
+          >
+            未評価に戻す
+          </button>
+
+        </div>
+
+        <p
+          id="shopNoneMessage"
+          class="excluded-message"
+        >
+          売店なしを選択した場合は、0.500点として計算します。
+        </p>
+
+      </section>
+
+      <!-- Wi-Fi -->
+      <section class="detail-section star-score-section">
+
+        <div class="detail-section-heading">
+
+          <div>
+            <h2 class="detail-item-title">
+              Wi-Fi
+            </h2>
+
+            <p class="detail-item-description">
+              速度・安定性・接続しやすさなどの快適性を評価
+            </p>
+          </div>
+
+          <span
+            id="wifiPoint"
+            class="detail-item-point"
+          >
+            0.000 / 1.000
+          </span>
+
+        </div>
+
+        <div class="star-rating-area">
+
+          <div
+            class="star-display"
+            aria-hidden="true"
+          >
+            <span class="star-background">
+              ★★★★★
+            </span>
+
+            <span
+              id="wifiStarFill"
+              class="star-fill"
+            >
+              ★★★★★
+            </span>
+          </div>
+
+          <p
+            id="wifiValue"
+            class="star-score-value"
+          >
+            未評価
+          </p>
+
+          <input
+            id="wifiInput"
+            class="star-range"
+            type="range"
+            min="0"
+            max="5"
+            step="0.001"
+            value="0"
+            aria-label="Wi-Fiの快適性"
+          >
+
+          <button
+            class="clear-star-button"
+            type="button"
+            data-clear-score="wifi"
+          >
+            未評価に戻す
+          </button>
+
+        </div>
+
+      </section>
+
+      <!-- アクセス -->
+      <section class="detail-section star-score-section">
+
+        <div class="detail-section-heading">
+
+          <div>
+            <h2 class="detail-item-title">
+              アクセス
+            </h2>
+
+            <p class="detail-item-description">
+              駅からの距離や送迎を含め、行きやすさを総合評価
+            </p>
+          </div>
+
+          <span
+            id="accessPoint"
+            class="detail-item-point"
+          >
+            0.000 / 1.000
+          </span>
+
+        </div>
+
+        <div class="star-rating-area">
+
+          <div
+            class="star-display"
+            aria-hidden="true"
+          >
+            <span class="star-background">
+              ★★★★★
+            </span>
+
+            <span
+              id="accessStarFill"
+              class="star-fill"
+            >
+              ★★★★★
+            </span>
+          </div>
+
+          <p
+            id="accessValue"
+            class="star-score-value"
+          >
+            未評価
+          </p>
+
+          <input
+            id="accessInput"
+            class="star-range"
+            type="range"
+            min="0"
+            max="5"
+            step="0.001"
+            value="0"
+            aria-label="アクセスの評価"
+          >
+
+          <button
+            class="clear-star-button"
+            type="button"
+            data-clear-score="access"
+          >
+            未評価に戻す
+          </button>
+
+        </div>
+
+        <div class="score-rule-box">
+          <p>
+            駅から遠い場合でも、便利な送迎があれば高く評価できます。
+          </p>
+        </div>
+
+      </section>
+
+      <p
+        id="facilityFormMessage"
+        class="detail-form-message"
+        aria-live="polite"
+      ></p>
+
+      <button
+        id="saveFacilityEvaluation"
+        class="detail-save-button"
+        type="button"
+      >
+        この評価で確定
+      </button>
+
+    </form>
+
+  </main>
+
+  <script src="js/facility.js"></script>
+
+</body>
+</html>

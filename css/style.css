@@ -1,0 +1,147 @@
+/* ==================================
+   Hotel Score Map
+   全ページ共通
+================================== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  font-family:
+    "Yu Gothic UI",
+    "Yu Gothic",
+    "Meiryo",
+    sans-serif;
+
+  color: #222222;
+  background: #ffffff;
+
+  overflow: hidden;
+}
+
+/* ==================================
+   ヘッダー
+================================== */
+
+.app-header {
+  position: fixed;
+
+  top: 0;
+  left: 0;
+  z-index: 1000;
+
+  width: 100%;
+  height: 60px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #ffffff;
+  border-bottom: 1px solid #dddddd;
+}
+
+.app-title {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+/* ==================================
+   メイン
+================================== */
+
+.main-content {
+  position: fixed;
+
+  top: 60px;
+  bottom: 70px;
+  left: 0;
+
+  width: 100%;
+
+  padding: 14px;
+
+  background: #ffffff;
+}
+
+/* ==================================
+   下部ナビ
+================================== */
+
+.bottom-nav {
+  position: fixed;
+
+  left: 0;
+  bottom: 0;
+  z-index: 1000;
+
+  width: 100%;
+  height: 70px;
+
+  display: flex;
+
+  background: #ffffff;
+  border-top: 1px solid #dddddd;
+}
+
+.nav-item {
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 3px;
+
+  color: #333333;
+  text-decoration: none;
+
+  -webkit-tap-highlight-color: transparent;
+}
+
+.nav-item:hover {
+  background: #f7f7f7;
+}
+
+.nav-item.active {
+  color: #2196f3;
+}
+
+.nav-icon {
+  font-size: 24px;
+  line-height: 1;
+}
+
+.nav-label {
+  font-size: 13px;
+}
+
+/* iPad横画面など */
+@media (min-width: 700px) {
+  .nav-label {
+    font-size: 14px;
+  }
+}
+
+/* ==================================
+   下部ナビ：3項目
+================================== */
+
+.bottom-nav {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.nav-item {
+  min-width: 0;
+}

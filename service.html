@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>接客・サービス | Hotel Score Map</title>
+
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/evaluation-detail.css">
+</head>
+
+<body>
+
+  <header class="app-header detail-header">
+
+    <button
+      id="backButton"
+      class="back-button"
+      type="button"
+      aria-label="評価追加画面へ戻る"
+    >
+      ＜
+    </button>
+
+    <h1 class="app-title">
+      接客・サービス
+    </h1>
+
+    <div class="header-spacer"></div>
+
+  </header>
+
+  <main class="main-content detail-main">
+
+    <form
+      id="serviceEvaluationForm"
+      class="detail-form"
+      novalidate
+    >
+
+      <!-- 合計評価 -->
+      <section class="detail-score-card">
+
+        <p class="detail-score-label">
+          接客・サービス
+        </p>
+
+        <p
+          id="serviceTotalScore"
+          class="detail-score-value"
+          aria-live="polite"
+        >
+          ☆―.―――
+        </p>
+
+        <p class="detail-score-max">
+          5.000点満点
+        </p>
+
+      </section>
+
+      <!-- 対応 -->
+      <section class="detail-section star-score-section">
+
+        <div class="detail-section-heading">
+
+          <div>
+            <h2 class="detail-item-title">
+              対応
+            </h2>
+
+            <p class="detail-item-description">
+              スタッフの接客や案内を評価
+            </p>
+          </div>
+
+          <span
+            id="responsePoint"
+            class="detail-item-point"
+          >
+            0.000 / 1.000
+          </span>
+
+        </div>
+
+        <div class="star-rating-area">
+
+          <div
+            class="star-display"
+            aria-hidden="true"
+          >
+            <span class="star-background">
+              ★★★★★
+            </span>
+
+            <span
+              id="responseStarFill"
+              class="star-fill"
+            >
+              ★★★★★
+            </span>
+          </div>
+
+          <p
+            id="responseValue"
+            class="star-score-value"
+          >
+            未評価
+          </p>
+
+          <input
+            id="responseInput"
+            class="star-range"
+            type="range"
+            min="0"
+            max="5"
+            step="0.001"
+            value="0"
+            aria-label="対応の評価"
+          >
+
+          <button
+            class="clear-star-button"
+            type="button"
+            data-clear-score="response"
+          >
+            未評価に戻す
+          </button>
+
+        </div>
+
+      </section>
+
+      <!-- 滞在可能時間 -->
+      <section class="detail-section service-time-section">
+
+        <div class="detail-section-heading">
+
+          <div>
+            <h2 class="detail-item-title">
+              滞在可能時間
+            </h2>
+
+            <p class="detail-item-description">
+              チェックイン・アウト時刻から自動計算
+            </p>
+          </div>
+
+          <span
+            id="stayTimePoint"
+            class="detail-item-point"
+          >
+            0.000 / 1.000
+          </span>
+
+        </div>
+
+        <div class="time-input-grid">
+
+          <label class="time-input-group">
+
+            <span class="time-input-label">
+              チェックイン
+            </span>
+
+            <span class="detail-time-wrapper">
+              <input
+                id="checkInInput"
+                class="detail-time-input"
+                type="time"
+                value="15:00"
+              >
+            </span>
+
+          </label>
+
+          <label class="time-input-group">
+
+            <span class="time-input-label">
+              チェックアウト
+            </span>
+
+            <span class="detail-time-wrapper">
+              <input
+                id="checkOutInput"
+                class="detail-time-input"
+                type="time"
+                value="10:00"
+              >
+            </span>
+
+          </label>
+
+        </div>
+
+        <p
+          id="stayTimeDisplay"
+          class="calculation-result"
+        >
+          滞在可能時間：19時間
+        </p>
+
+        <div class="score-rule-box">
+          <p>19時間以下：0.800点</p>
+          <p>20時間以上21時間未満：0.900点</p>
+          <p>21時間以上：1.000点</p>
+        </div>
+
+      </section>
+
+      <!-- 送迎 -->
+      <section class="detail-section">
+
+        <div class="detail-section-heading">
+
+          <div>
+            <h2 class="detail-item-title">
+              送迎
+            </h2>
+
+            <p class="detail-item-description">
+              ホテルまでの送迎状況
+            </p>
+          </div>
+
+          <span
+            id="shuttlePoint"
+            class="detail-item-point"
+          >
+            0.000 / 1.000
+          </span>
+
+        </div>
+
+        <div class="choice-list">
+
+          <label class="choice-option">
+            <input
+              type="radio"
+              name="shuttle"
+              value="available"
+            >
+            <span>
+              送迎あり
+              <small>1.000点</small>
+            </span>
+          </label>
+
+          <label class="choice-option">
+            <input
+              type="radio"
+              name="shuttle"
+              value="unnecessary"
+            >
+            <span>
+              送迎の必要なし
+              <small>1.000点</small>
+            </span>
+          </label>
+
+          <label class="choice-option">
+            <input
+              type="radio"
+              name="shuttle"
+              value="none"
+            >
+            <span>
+              送迎なし
+              <small>0.500点</small>
+            </span>
+          </label>
+
+        </div>
+
+      </section>
+
+      <!-- 荷物対応 -->
+      <section class="detail-section">
+
+        <div class="detail-section-heading">
+
+          <div>
+            <h2 class="detail-item-title">
+              荷物対応
+            </h2>
+
+            <p class="detail-item-description">
+              宿泊前後の荷物預かりなど
+            </p>
+          </div>
+
+          <span
+            id="luggagePoint"
+            class="detail-item-point"
+          >
+            0.000 / 1.000
+          </span>
+
+        </div>
+
+        <div class="choice-list">
+
+          <label class="choice-option">
+            <input
+              type="radio"
+              name="luggage"
+              value="available"
+            >
+            <span>
+              対応あり
+              <small>1.000点</small>
+            </span>
+          </label>
+
+          <label class="choice-option">
+            <input
+              type="radio"
+              name="luggage"
+              value="none"
+            >
+            <span>
+              対応なし
+              <small>0.500点</small>
+            </span>
+          </label>
+
+        </div>
+
+      </section>
+
+      <!-- その他サービス -->
+      <section class="detail-section extra-service-section">
+
+        <div class="detail-section-heading">
+
+          <div>
+            <h2 class="detail-item-title">
+              その他サービス
+            </h2>
+
+            <p class="detail-item-description">
+              当てはまるサービスを選択
+            </p>
+          </div>
+
+          <span
+            id="extraServicePoint"
+            class="detail-item-point"
+          >
+            0.500 / 1.000
+          </span>
+
+        </div>
+
+        <div class="checkbox-list">
+
+          <label class="checkbox-option">
+            <input
+              type="checkbox"
+              name="extraService"
+              value="lounge"
+            >
+            <span>ラウンジサービス</span>
+          </label>
+
+          <label class="checkbox-option">
+            <input
+              type="checkbox"
+              name="extraService"
+              value="drink"
+            >
+            <span>無料ドリンク</span>
+          </label>
+
+          <label class="checkbox-option">
+            <input
+              type="checkbox"
+              name="extraService"
+              value="snack"
+            >
+            <span>お菓子・軽食</span>
+          </label>
+
+          <label class="checkbox-option">
+            <input
+              type="checkbox"
+              name="extraService"
+              value="night-meal"
+            >
+            <span>夜食</span>
+          </label>
+
+          <label class="checkbox-option">
+            <input
+              type="checkbox"
+              name="extraService"
+              value="ice-cream"
+            >
+            <span>湯上がりアイス</span>
+          </label>
+
+          <label class="checkbox-option">
+            <input
+              type="checkbox"
+              name="extraService"
+              value="anniversary"
+            >
+            <span>記念日対応</span>
+          </label>
+
+          <label class="checkbox-option">
+            <input
+              type="checkbox"
+              name="extraService"
+              value="other"
+            >
+            <span>その他</span>
+          </label>
+
+        </div>
+
+        <p
+          id="extraServiceCount"
+          class="calculation-result"
+        >
+          選択数：0個
+        </p>
+
+        <div class="score-rule-box">
+          <p>0個：0.500点</p>
+          <p>1個：0.700点</p>
+          <p>2個：0.900点</p>
+          <p>3個以上：1.000点</p>
+        </div>
+
+      </section>
+
+      <p
+        id="serviceFormMessage"
+        class="detail-form-message"
+        aria-live="polite"
+      ></p>
+
+      <button
+        id="saveServiceEvaluation"
+        class="detail-save-button"
+        type="button"
+      >
+        この評価で確定
+      </button>
+
+    </form>
+
+  </main>
+
+  <script src="js/service.js"></script>
+
+</body>
+</html>

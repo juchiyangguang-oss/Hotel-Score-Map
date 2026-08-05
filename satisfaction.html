@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>満足度 | Hotel Score Map</title>
+
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/evaluation-detail.css">
+</head>
+
+<body>
+
+  <header class="app-header detail-header">
+
+    <button
+      id="backButton"
+      class="back-button"
+      type="button"
+      aria-label="評価追加画面へ戻る"
+    >
+      ＜
+    </button>
+
+    <h1 class="app-title">
+      満足度
+    </h1>
+
+    <div class="header-spacer"></div>
+
+  </header>
+
+  <main class="main-content detail-main">
+
+    <form
+      id="satisfactionEvaluationForm"
+      class="detail-form"
+      novalidate
+    >
+
+      <!-- 合計評価 -->
+      <section class="detail-score-card">
+
+        <p class="detail-score-label">
+          満足度
+        </p>
+
+        <p
+          id="satisfactionTotalScore"
+          class="detail-score-value"
+          aria-live="polite"
+        >
+          ☆―.―――
+        </p>
+
+        <p class="detail-score-max">
+          5.000点満点
+        </p>
+
+      </section>
+
+      <!-- 根本的な満足度 -->
+      <section class="detail-section star-score-section">
+
+        <div class="detail-section-heading">
+
+          <div>
+            <h2 class="detail-item-title">
+              根本的な満足度
+            </h2>
+
+            <p class="detail-item-description">
+              宿泊全体を振り返った満足感を評価
+            </p>
+          </div>
+
+          <span
+            id="basicSatisfactionPoint"
+            class="detail-item-point"
+          >
+            0.000 / 2.500
+          </span>
+
+        </div>
+
+        <div class="star-rating-area">
+
+          <div
+            class="star-display"
+            aria-hidden="true"
+          >
+            <span class="star-background">
+              ★★★★★
+            </span>
+
+            <span
+              id="basicSatisfactionStarFill"
+              class="star-fill"
+            >
+              ★★★★★
+            </span>
+          </div>
+
+          <p
+            id="basicSatisfactionValue"
+            class="star-score-value"
+          >
+            未評価
+          </p>
+
+          <input
+            id="basicSatisfactionInput"
+            class="star-range"
+            type="range"
+            min="0"
+            max="5"
+            step="0.001"
+            value="0"
+            aria-label="根本的な満足度"
+          >
+
+          <button
+            class="clear-star-button"
+            type="button"
+            data-clear-score="basic"
+          >
+            未評価に戻す
+          </button>
+
+        </div>
+
+        <div class="score-rule-box">
+          <p>
+            入力した評価を2.500点満点へ換算します。
+          </p>
+        </div>
+
+      </section>
+
+      <!-- 快適さ -->
+      <section class="detail-section star-score-section">
+
+        <div class="detail-section-heading">
+
+          <div>
+            <h2 class="detail-item-title">
+              快適さ
+            </h2>
+
+            <p class="detail-item-description">
+              滞在中にどれだけ心地よく過ごせたかを評価
+            </p>
+          </div>
+
+          <span
+            id="comfortPoint"
+            class="detail-item-point"
+          >
+            0.000 / 2.500
+          </span>
+
+        </div>
+
+        <div class="star-rating-area">
+
+          <div
+            class="star-display"
+            aria-hidden="true"
+          >
+            <span class="star-background">
+              ★★★★★
+            </span>
+
+            <span
+              id="comfortStarFill"
+              class="star-fill"
+            >
+              ★★★★★
+            </span>
+          </div>
+
+          <p
+            id="comfortValue"
+            class="star-score-value"
+          >
+            未評価
+          </p>
+
+          <input
+            id="comfortInput"
+            class="star-range"
+            type="range"
+            min="0"
+            max="5"
+            step="0.001"
+            value="0"
+            aria-label="快適さ"
+          >
+
+          <button
+            class="clear-star-button"
+            type="button"
+            data-clear-score="comfort"
+          >
+            未評価に戻す
+          </button>
+
+        </div>
+
+        <div class="score-rule-box">
+          <p>
+            入力した評価を2.500点満点へ換算します。
+          </p>
+        </div>
+
+      </section>
+
+      <p
+        id="satisfactionFormMessage"
+        class="detail-form-message"
+        aria-live="polite"
+      ></p>
+
+      <button
+        id="saveSatisfactionEvaluation"
+        class="detail-save-button"
+        type="button"
+      >
+        この評価で確定
+      </button>
+
+    </form>
+
+  </main>
+
+  <script src="js/satisfaction.js"></script>
+
+</body>
+</html>
