@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
-
   <meta charset="UTF-8">
 
   <meta
@@ -12,8 +10,6 @@
 
   <title>評価追加 | Hotel Score Map</title>
 
-  <!-- Leaflet -->
-
   <link
     rel="stylesheet"
     href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -21,646 +17,1001 @@
     crossorigin=""
   >
 
-  <link
-    rel="stylesheet"
-    href="css/style.css"
-  >
-
-  <link
-    rel="stylesheet"
-    href="css/add.css"
-  >
-
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/add.css">
 </head>
 
 <body>
 
-<header class="app-header">
-
-<h1 class="app-title">
-評価追加
-</h1>
-
-</header>
-
-<main class="main-content">
-
-<form
-id="hotelForm"
-class="add-page"
-novalidate
->
-
-<section class="basic-section">
-
-<div class="form-row">
-
-<label for="hotelName">
-ホテル・旅館名
-</label>
-
-<input
-type="text"
-id="hotelName"
-name="hotelName"
-placeholder="例：天童荘"
-autocomplete="off"
-required
->
-
-</div>
-
-<div class="form-row">
-
-<label for="prefecture">
-都道府県
-</label>
-
-<select
-id="prefecture"
-name="prefecture"
-required
->
-
-<option value="">
-都道府県を選択
-</option>
-
-</select>
-
-</div>
-
-<div class="form-row">
-
-<label for="address">
-所在地
-</label>
-
-<input
-type="text"
-id="address"
-name="address"
-placeholder="例：山形県天童市鎌田2丁目2-18"
-autocomplete="off"
->
-
-</div>
-
-<div class="form-row">
-
-<label>
-地図上の位置
-</label>
-
-<button
-type="button"
-id="openLocationDialogButton"
-class="location-button"
->
-
-地図で位置を設定
-
-</button>
-
-<p
-id="locationStatus"
-class="location-status location-unset"
->
-
-位置未設定
-
-</p>
-
-</div>
-
-<div class="form-row">
-
-<label for="stayDate">
-宿泊日
-</label>
-
-<div class="date-input-wrap">
-
-<input
-type="date"
-id="stayDate"
-name="stayDate"
-required
->
-
-</div>
-
-</div>
-
-</section>
-
-<section class="score-summary">
-
-<div>
-
-<p class="summary-label">
-総合評価
-</p>
-
-<p
-id="totalScore"
-class="total-score"
->
-
----
-
-</p>
-
-</div>
-
-<div
-id="rankBadge"
-class="rank-badge rank-unset"
->
-
-未評価
-
-</div>
-
-</section>
-
-<section class="category-list">
-
-<button
-type="button"
-class="category-button"
-data-category="room"
->
-
-<span>
-客室・アメニティ
-</span>
-
-<span class="category-value">
-未評価
-</span>
-
-<span class="category-arrow">
-›
-</span>
-
-</button>
-
-<button
-type="button"
-class="category-button"
-data-category="service"
->
-
-<span>
-接客・サービス
-</span>
-
-<span class="category-value">
-未評価
-</span>
-
-<span class="category-arrow">
-›
-</span>
-
-</button>
-
-<button
-type="button"
-class="category-button"
-data-category="bath"
->
-
-<span>
-バス・お風呂
-</span>
-
-<span class="category-value">
-未評価
-</span>
-
-<span class="category-arrow">
-›
-</span>
-
-</button>
-
-<button
-type="button"
-class="category-button"
-data-category="facility"
->
-
-<span>
-施設・設備
-</span>
-
-<span class="category-value">
-未評価
-</span>
-
-<span class="category-arrow">
-›
-</span>
-
-</button>
-
-<button
-type="button"
-class="category-button"
-data-category="meal"
->
-
-<span>
-お食事
-</span>
-
-<span class="category-value">
-未評価
-</span>
-
-<span class="category-arrow">
-›
-</span>
-
-</button>
-
-<button
-type="button"
-class="category-button"
-data-category="satisfaction"
->
-
-<span>
-満足度
-</span>
-
-<span class="category-value">
-未評価
-</span>
-
-<span class="category-arrow">
-›
-</span>
-
-</button>
-
-</section>
-
-<section class="repeat-section">
-
-<h2>
-リピートポイント
-</h2>
-
-<p
-id="repeatMessage"
-class="repeat-message"
->
-
-評価を入力すると、付与可能か自動判定します。
-
-</p>
-
-<div class="repeat-options">
-
-<label class="repeat-option">
-
-<input
-type="radio"
-name="repeatType"
-value="none"
-checked
->
-
-<span>
-なし
-</span>
-
-</label>
-
-<label class="repeat-option">
-
-<input
-type="radio"
-name="repeatType"
-value="normal"
-id="repeatNormal"
-disabled
->
-
-<span>
-
-リピあり
-
-<small>
-＋0.050
-</small>
-
-</span>
-
-</label>
-
-<label class="repeat-option">
-
-<input
-type="radio"
-name="repeatType"
-value="intense"
-id="repeatIntense"
-disabled
->
-
-<span>
-
-激リピあり
-
-<small>
-＋0.100
-</small>
-
-</span>
-
-</label>
-
-</div>
-
-</section>
-
-<div class="save-area">
-
-<p
-id="formMessage"
-class="form-message"
-aria-live="polite"
-></p>
-
-<button
-type="submit"
-id="saveButton"
-class="save-button"
->
-
-評価を保存
-
-</button>
-
-</div>
-
-</form>
-
-</main>
-
-<nav class="bottom-nav">
-
-<a
-href="index.html"
-class="nav-item"
->
-
-<span class="nav-icon">
-⌂
-</span>
-
-<span class="nav-label">
-ホーム
-</span>
-
-</a>
-
-<a
-href="list.html"
-class="nav-item"
->
-
-<span class="nav-icon">
-≡
-</span>
-
-<span class="nav-label">
-一覧
-</span>
-
-</a>
-
-<a
-href="add.html"
-class="nav-item active"
->
-
-<span class="nav-icon">
-＋
-</span>
-
-<span class="nav-label">
-評価追加
-</span>
-
-</a>
-
-</nav>
-
-<dialog
-id="scoreDialog"
-class="score-dialog"
->
-
-<form method="dialog">
-
-<div class="dialog-header">
-
-<h2 id="dialogTitle">
-評価
-</h2>
-
-<button
-type="submit"
-class="dialog-close"
-value="cancel"
-aria-label="閉じる"
->
-
-×
-
-</button>
-
-</div>
-
-<div class="score-input-area">
-
-<label for="categoryScore">
-評価
-</label>
-
-<input
-type="number"
-id="categoryScore"
-min="0"
-max="5"
-step="0.001"
-placeholder="0.000〜5.000"
->
-
-<p class="score-help">
-小数第3位まで入力できます。
-</p>
-
-</div>
-
-<div class="dialog-actions">
-
-<button
-type="button"
-id="clearScoreButton"
-class="secondary-button"
->
-
-未評価に戻す
-
-</button>
-
-<button
-type="button"
-id="applyScoreButton"
-class="primary-button"
->
-
-決定
-
-</button>
-
-</div>
-
-</form>
-
-</dialog>
-
-<dialog
-id="locationDialog"
-class="location-dialog"
->
-
-<div class="location-dialog-content">
-
-<div class="dialog-header">
-
-<h2>
-地図で位置を設定
-</h2>
-
-<button
-type="button"
-id="closeLocationDialogButton"
-class="dialog-close"
-aria-label="閉じる"
->
-
-×
-
-</button>
-
-</div>
-
-<div class="location-search-area">
-
-<input
-type="search"
-id="locationSearchInput"
-placeholder="ホテル名・住所・地域を入力"
-autocomplete="off"
->
-
-<button
-type="button"
-id="locationSearchButton"
-class="primary-button"
->
-
-検索
-
-</button>
-
-</div>
-
-<p
-id="locationSearchMessage"
-class="location-search-message"
-aria-live="polite"
-></p>
-
-<div
-id="locationMap"
-class="location-map"
-aria-label="ホテル位置設定用地図"
-></div>
-
-<p class="location-help">
-
-地図をタップするか、ピンをドラッグして位置を調整できます。
-
-</p>
-
-<div class="location-coordinate-display">
-
-<span>
-
-緯度：
-
-<strong id="latitudeDisplay">
-未設定
-</strong>
-
-</span>
-
-<span>
-
-経度：
-
-<strong id="longitudeDisplay">
-未設定
-</strong>
-
-</span>
-
-</div>
-
-<div class="dialog-actions">
-
-<button
-type="button"
-id="clearLocationButton"
-class="secondary-button"
->
-
-位置を解除
-
-</button>
-
-<button
-type="button"
-id="applyLocationButton"
-class="primary-button"
->
-
-この位置に決定
-
-</button>
-
-</div>
-
-</div>
-
-</dialog>
-
-<script
-src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-crossorigin=""
-></script>
-
-<script src="js/add.js"></script>
+  <header class="app-header">
+    <h1 class="app-title">
+      評価追加
+    </h1>
+  </header>
+
+  <main class="main-content">
+
+    <form
+      id="hotelForm"
+      class="add-page"
+      novalidate
+    >
+
+      <!-- 基本情報 -->
+      <section class="basic-section">
+
+        <div class="form-row">
+          <label for="hotelName">
+            ホテル・旅館名
+          </label>
+
+          <input
+            type="text"
+            id="hotelName"
+            name="hotelName"
+            placeholder="例：天童荘"
+            autocomplete="off"
+            required
+          >
+        </div>
+
+        <div class="form-row">
+          <label for="prefecture">
+            都道府県
+          </label>
+
+          <select
+            id="prefecture"
+            name="prefecture"
+            required
+          >
+            <option value="">
+              都道府県を選択
+            </option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <label for="address">
+            所在地
+          </label>
+
+          <input
+            type="text"
+            id="address"
+            name="address"
+            placeholder="例：山形県天童市鎌田2丁目2-18"
+            autocomplete="off"
+          >
+        </div>
+
+        <div class="form-row">
+          <label>
+            地図上の位置
+          </label>
+
+          <button
+            type="button"
+            id="openLocationDialogButton"
+            class="location-button"
+          >
+            地図で位置を設定
+          </button>
+
+          <p
+            id="locationStatus"
+            class="location-status location-unset"
+          >
+            位置未設定
+          </p>
+        </div>
+
+        <div class="form-row">
+          <label for="stayDate">
+            宿泊日
+          </label>
+
+          <input
+            type="date"
+            id="stayDate"
+            name="stayDate"
+            required
+          >
+        </div>
+
+      </section>
+
+      <!-- 総合評価 -->
+      <section class="score-summary">
+
+        <div>
+          <p class="summary-label">
+            総合評価
+          </p>
+
+          <p
+            id="totalScore"
+            class="total-score"
+          >
+            ---
+          </p>
+        </div>
+
+        <div
+          id="rankBadge"
+          class="rank-badge rank-unset"
+        >
+          未評価
+        </div>
+
+      </section>
+
+      <!-- 評価項目 -->
+      <section class="category-list">
+
+        <button
+          type="button"
+          class="category-button"
+          data-category="room"
+        >
+          <span class="category-name">
+            客室・アメニティ
+          </span>
+
+          <span class="category-value">
+            未評価
+          </span>
+
+          <span class="category-arrow">
+            ›
+          </span>
+        </button>
+
+        <button
+          type="button"
+          class="category-button"
+          data-category="size"
+        >
+          <span class="category-name">
+            広さ
+          </span>
+
+          <span class="category-value">
+            未評価
+          </span>
+
+          <span class="category-arrow">
+            ›
+          </span>
+        </button>
+
+        <button
+          type="button"
+          class="category-button"
+          data-category="service"
+        >
+          <span class="category-name">
+            接客・サービス
+          </span>
+
+          <span class="category-value">
+            未評価
+          </span>
+
+          <span class="category-arrow">
+            ›
+          </span>
+        </button>
+
+        <button
+          type="button"
+          class="category-button"
+          data-category="bath"
+        >
+          <span class="category-name">
+            バス・お風呂
+          </span>
+
+          <span class="category-value">
+            未評価
+          </span>
+
+          <span class="category-arrow">
+            ›
+          </span>
+        </button>
+
+        <button
+          type="button"
+          class="category-button"
+          data-category="facility"
+        >
+          <span class="category-name">
+            施設・設備
+          </span>
+
+          <span class="category-value">
+            未評価
+          </span>
+
+          <span class="category-arrow">
+            ›
+          </span>
+        </button>
+
+        <button
+          type="button"
+          class="category-button"
+          data-category="meal"
+        >
+          <span class="category-name">
+            お食事
+          </span>
+
+          <span class="category-value">
+            未評価
+          </span>
+
+          <span class="category-arrow">
+            ›
+          </span>
+        </button>
+
+        <button
+          type="button"
+          class="category-button"
+          data-category="satisfaction"
+        >
+          <span class="category-name">
+            満足度
+          </span>
+
+          <span class="category-value">
+            未評価
+          </span>
+
+          <span class="category-arrow">
+            ›
+          </span>
+        </button>
+
+      </section>
+
+      <!-- リピートポイント -->
+      <section class="repeat-section">
+
+        <h2>
+          リピートポイント
+        </h2>
+
+        <p
+          id="repeatMessage"
+          class="repeat-message"
+        >
+          評価を入力すると、付与可能か自動判定します。
+        </p>
+
+        <div class="repeat-options">
+
+          <label class="repeat-option">
+            <input
+              type="radio"
+              name="repeatType"
+              value="none"
+              checked
+            >
+
+            <span>
+              なし
+            </span>
+          </label>
+
+          <label class="repeat-option">
+            <input
+              type="radio"
+              name="repeatType"
+              value="normal"
+              id="repeatNormal"
+              disabled
+            >
+
+            <span>
+              リピあり
+              <small>＋0.050</small>
+            </span>
+          </label>
+
+          <label class="repeat-option">
+            <input
+              type="radio"
+              name="repeatType"
+              value="intense"
+              id="repeatIntense"
+              disabled
+            >
+
+            <span>
+              激リピあり
+              <small>＋0.100</small>
+            </span>
+          </label>
+
+        </div>
+
+      </section>
+
+      <!-- 保存 -->
+      <div class="save-area">
+
+        <p
+          id="formMessage"
+          class="form-message"
+          aria-live="polite"
+        ></p>
+
+        <button
+          type="submit"
+          id="saveButton"
+          class="save-button"
+        >
+          評価を保存
+        </button>
+
+      </div>
+
+    </form>
+
+  </main>
+
+  <!-- 下部ナビ -->
+  <nav class="bottom-nav">
+
+    <a
+      href="index.html"
+      class="nav-item"
+    >
+      <span class="nav-icon">⌂</span>
+      <span class="nav-label">ホーム</span>
+    </a>
+
+    <a
+      href="list.html"
+      class="nav-item"
+    >
+      <span class="nav-icon">≡</span>
+      <span class="nav-label">一覧</span>
+    </a>
+
+    <a
+      href="add.html"
+      class="nav-item active"
+    >
+      <span class="nav-icon">＋</span>
+      <span class="nav-label">評価追加</span>
+    </a>
+
+  </nav>
+
+  <!-- ==================================
+       通常の数字評価
+  ================================== -->
+
+  <dialog
+    id="scoreDialog"
+    class="score-dialog"
+  >
+
+    <form method="dialog">
+
+      <div class="dialog-header">
+
+        <h2 id="dialogTitle">
+          評価
+        </h2>
+
+        <button
+          type="submit"
+          value="cancel"
+          class="dialog-close"
+          aria-label="閉じる"
+        >
+          ×
+        </button>
+
+      </div>
+
+      <div class="score-input-area">
+
+        <label for="categoryScore">
+          評価
+        </label>
+
+        <input
+          type="number"
+          id="categoryScore"
+          min="0"
+          max="5"
+          step="0.001"
+          inputmode="decimal"
+          placeholder="0.000～5.000"
+        >
+
+        <p class="score-help">
+          0.000から5.000まで、小数第3位で入力できます。
+        </p>
+
+      </div>
+
+      <div class="dialog-actions">
+
+        <button
+          type="button"
+          id="clearScoreButton"
+          class="secondary-button"
+        >
+          未評価に戻す
+        </button>
+
+        <button
+          type="button"
+          id="applyScoreButton"
+          class="primary-button"
+        >
+          決定
+        </button>
+
+      </div>
+
+    </form>
+
+  </dialog>
+
+  <!-- ==================================
+       広さ
+  ================================== -->
+
+  <dialog
+    id="sizeDialog"
+    class="detail-score-dialog"
+  >
+
+    <div class="detail-score-dialog-content">
+
+      <div class="dialog-header">
+
+        <h2>
+          広さ
+        </h2>
+
+        <button
+          type="button"
+          id="closeSizeDialogButton"
+          class="dialog-close"
+          aria-label="閉じる"
+        >
+          ×
+        </button>
+
+      </div>
+
+      <!-- 客室タイプ -->
+      <section class="detail-score-section">
+
+        <div class="detail-score-heading">
+          <h3>
+            客室タイプ
+          </h3>
+        </div>
+
+        <div class="room-type-options">
+
+          <label class="select-card">
+            <input
+              type="radio"
+              name="roomType"
+              value="western"
+              checked
+            >
+
+            <span>
+              洋室
+            </span>
+          </label>
+
+          <label class="select-card">
+            <input
+              type="radio"
+              name="roomType"
+              value="japanese"
+            >
+
+            <span>
+              和室
+            </span>
+          </label>
+
+          <label class="select-card">
+            <input
+              type="radio"
+              name="roomType"
+              value="mixed"
+            >
+
+            <span>
+              和洋室
+            </span>
+          </label>
+
+        </div>
+
+      </section>
+
+      <!-- 広さ選択 -->
+      <section class="detail-score-section">
+
+        <div class="detail-score-heading">
+
+          <div>
+            <h3>
+              広さを選択
+            </h3>
+
+            <p
+              id="sizeTypeMessage"
+              class="room-size-type-message"
+            >
+              洋室の広さを選択
+            </p>
+          </div>
+
+          <strong id="sizeScoreDisplay">
+            3.000
+          </strong>
+
+        </div>
+
+        <!-- 洋室・和洋室 -->
+        <div
+          id="westernSizeOptions"
+          class="room-size-options"
+        >
+
+          <label class="select-card">
+            <input
+              type="radio"
+              name="westernSize"
+              value="2"
+            >
+
+            <span>
+              20㎡未満
+              <small>2.000点</small>
+            </span>
+          </label>
+
+          <label class="select-card">
+            <input
+              type="radio"
+              name="westernSize"
+              value="2.5"
+            >
+
+            <span>
+              20～40㎡
+              <small>2.500点</small>
+            </span>
+          </label>
+
+          <label class="select-card">
+            <input
+              type="radio"
+              name="westernSize"
+              value="3"
+              checked
+            >
+
+            <span>
+              40～60㎡
+              <small>3.000点</small>
+            </span>
+          </label>
+
+          <label class="select-card">
+            <input
+              type="radio"
+              name="westernSize"
+              value="3.5"
+            >
+
+            <span>
+              60～80㎡
+              <small>3.500点</small>
+            </span>
+          </label>
+
+          <label class="select-card">
+            <input
+              type="radio"
+              name="westernSize"
+              value="4"
+            >
+
+            <span>
+              80～100㎡
+              <small>4.000点</small>
+            </span>
+          </label>
+
+          <label class="select-card">
+            <input
+              type="radio"
+              name="westernSize"
+              value="5"
+            >
+
+            <span>
+              100㎡以上
+              <small>5.000点</small>
+            </span>
+          </label>
+
+        </div>
+
+        <!-- 和室 -->
+        <div
+          id="japaneseSizeOptions"
+          class="room-size-options"
+          hidden
+        >
+
+          <label class="select-card">
+            <input
+              type="radio"
+              name="japaneseSize"
+              value="2"
+            >
+
+            <span>
+              11畳未満
+              <small>2.000点</small>
+            </span>
+          </label>
+
+          <label class="select-card">
+            <input
+              type="radio"
+              name="japaneseSize"
+              value="2.5"
+            >
+
+            <span>
+              11～22畳
+              <small>2.500点</small>
+            </span>
+          </label>
+
+          <label class="select-card">
+            <input
+              type="radio"
+              name="japaneseSize"
+              value="3"
+              checked
+            >
+
+            <span>
+              22～33畳
+              <small>3.000点</small>
+            </span>
+          </label>
+
+          <label class="select-card">
+            <input
+              type="radio"
+              name="japaneseSize"
+              value="3.5"
+            >
+
+            <span>
+              33～44畳
+              <small>3.500点</small>
+            </span>
+          </label>
+
+          <label class="select-card">
+            <input
+              type="radio"
+              name="japaneseSize"
+              value="4"
+            >
+
+            <span>
+              44～55畳
+              <small>4.000点</small>
+            </span>
+          </label>
+
+          <label class="select-card">
+            <input
+              type="radio"
+              name="japaneseSize"
+              value="5"
+            >
+
+            <span>
+              55畳以上
+              <small>5.000点</small>
+            </span>
+          </label>
+
+        </div>
+
+      </section>
+
+      <section class="detail-total-section">
+
+        <span>
+          広さ
+        </span>
+
+        <strong>
+          <span id="sizeTotalScore">
+            3.000
+          </span>
+
+          <small>
+            / 5.000
+          </small>
+        </strong>
+
+      </section>
+
+      <div class="dialog-actions">
+
+        <button
+          type="button"
+          id="cancelSizeButton"
+          class="secondary-button"
+        >
+          キャンセル
+        </button>
+
+        <button
+          type="button"
+          id="clearSizeButton"
+          class="secondary-button danger-secondary-button"
+        >
+          未評価に戻す
+        </button>
+
+        <button
+          type="button"
+          id="applySizeButton"
+          class="primary-button"
+        >
+          決定
+        </button>
+
+      </div>
+
+    </div>
+
+  </dialog>
+
+  <!-- ==================================
+       お食事
+  ================================== -->
+
+  <dialog
+    id="mealDialog"
+    class="score-dialog"
+  >
+
+    <div class="meal-dialog-content">
+
+      <div class="dialog-header">
+
+        <h2>
+          お食事
+        </h2>
+
+        <button
+          type="button"
+          id="closeMealDialogButton"
+          class="dialog-close"
+          aria-label="閉じる"
+        >
+          ×
+        </button>
+
+      </div>
+
+      <!-- 一番上 -->
+      <label class="meal-none-option">
+
+        <input
+          type="checkbox"
+          id="mealNoneCheckbox"
+        >
+
+        <span>
+          食事なし
+        </span>
+
+      </label>
+
+      <p class="meal-none-description">
+        「食事なし」を選択した場合、お食事は総合評価の計算から除外されます。
+      </p>
+
+      <div
+        id="mealScoreInputArea"
+        class="score-input-area"
+      >
+
+        <label for="mealScoreInput">
+          お食事の評価
+        </label>
+
+        <input
+          type="number"
+          id="mealScoreInput"
+          min="0"
+          max="5"
+          step="0.001"
+          inputmode="decimal"
+          placeholder="0.000～5.000"
+        >
+
+        <p class="score-help">
+          0.000から5.000まで、小数第3位で入力できます。
+        </p>
+
+      </div>
+
+      <div class="dialog-actions">
+
+        <button
+          type="button"
+          id="cancelMealButton"
+          class="secondary-button"
+        >
+          キャンセル
+        </button>
+
+        <button
+          type="button"
+          id="clearMealButton"
+          class="secondary-button danger-secondary-button"
+        >
+          未評価に戻す
+        </button>
+
+        <button
+          type="button"
+          id="applyMealButton"
+          class="primary-button"
+        >
+          決定
+        </button>
+
+      </div>
+
+    </div>
+
+  </dialog>
+
+  <!-- ==================================
+       地図位置設定
+  ================================== -->
+
+  <dialog
+    id="locationDialog"
+    class="location-dialog"
+  >
+
+    <div class="location-dialog-content">
+
+      <div class="dialog-header">
+
+        <h2>
+          地図で位置を設定
+        </h2>
+
+        <button
+          type="button"
+          id="closeLocationDialogButton"
+          class="dialog-close"
+          aria-label="閉じる"
+        >
+          ×
+        </button>
+
+      </div>
+
+      <div class="location-search-area">
+
+        <input
+          type="search"
+          id="locationSearchInput"
+          placeholder="ホテル名・住所・地域を入力"
+          autocomplete="off"
+        >
+
+        <button
+          type="button"
+          id="locationSearchButton"
+          class="primary-button"
+        >
+          検索
+        </button>
+
+      </div>
+
+      <p
+        id="locationSearchMessage"
+        class="location-search-message"
+        aria-live="polite"
+      ></p>
+
+      <div
+        id="locationMap"
+        class="location-map"
+        aria-label="ホテル位置設定用地図"
+      ></div>
+
+      <p class="location-help">
+        地図をタップするか、ピンをドラッグして位置を調整できます。
+      </p>
+
+      <div class="location-coordinate-display">
+
+        <span>
+          緯度：
+          <strong id="latitudeDisplay">
+            未設定
+          </strong>
+        </span>
+
+        <span>
+          経度：
+          <strong id="longitudeDisplay">
+            未設定
+          </strong>
+        </span>
+
+      </div>
+
+      <div class="dialog-actions">
+
+        <button
+          type="button"
+          id="clearLocationButton"
+          class="secondary-button"
+        >
+          位置を解除
+        </button>
+
+        <button
+          type="button"
+          id="applyLocationButton"
+          class="primary-button"
+        >
+          この位置に決定
+        </button>
+
+      </div>
+
+    </div>
+
+  </dialog>
+
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+  ></script>
+
+  <script src="js/add.js"></script>
 
 </body>
-
 </html>

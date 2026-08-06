@@ -54,8 +54,6 @@ const prefectures = [
   { code: "47", name: "沖縄県", slug: "okinawa" }
 ];
 
-/* 都道府県ごとの地図初期位置 */
-
 const prefectureCenters = {
   hokkaido: [43.3, 142.7],
   aomori: [40.8, 140.7],
@@ -112,6 +110,7 @@ const prefectureCenters = {
 
 const categoryNames = {
   room: "客室・アメニティ",
+  size: "広さ",
   service: "接客・サービス",
   bath: "バス・お風呂",
   facility: "施設・設備",
@@ -121,12 +120,39 @@ const categoryNames = {
 
 const scores = {
   room: null,
+  size: null,
   service: null,
   bath: null,
   facility: null,
   meal: null,
   satisfaction: null
 };
+
+/* ==================================
+   広さデータ
+================================== */
+
+function createDefaultSizeDetails() {
+  return {
+    roomType: "western",
+    score: 3
+  };
+}
+
+let sizeDetails = null;
+let sizeDraft = createDefaultSizeDetails();
+
+/* ==================================
+   お食事データ
+================================== */
+
+let mealExcluded = false;
+let mealDraftExcluded = false;
+let mealDraftScore = null;
+
+/* ==================================
+   共通状態
+================================== */
 
 let activeCategory = null;
 
@@ -146,7 +172,7 @@ const isEditMode =
 let editingHotel = null;
 
 /* ==================================
-   地図位置
+   地図
 ================================== */
 
 let selectedLatitude = null;
@@ -156,7 +182,7 @@ let locationMap = null;
 let locationMarker = null;
 
 /* ==================================
-   HTML要素
+   基本要素
 ================================== */
 
 const pageTitle =
@@ -201,7 +227,9 @@ const repeatIntense =
 const formMessage =
   document.getElementById("formMessage");
 
-/* 評価入力ダイアログ */
+/* ==================================
+   数字入力ダイアログ
+================================== */
 
 const scoreDialog =
   document.getElementById("scoreDialog");
@@ -218,7 +246,86 @@ const clearScoreButton =
 const applyScoreButton =
   document.getElementById("applyScoreButton");
 
-/* 位置設定 */
+/* ==================================
+   広さダイアログ
+================================== */
+
+const sizeDialog =
+  document.getElementById("sizeDialog");
+
+const closeSizeDialogButton =
+  document.getElementById("closeSizeDialogButton");
+
+const cancelSizeButton =
+  document.getElementById("cancelSizeButton");
+
+const clearSizeButton =
+  document.getElementById("clearSizeButton");
+
+const applySizeButton =
+  document.getElementById("applySizeButton");
+
+const roomTypeInputs =
+  document.querySelectorAll(
+    'input[name="roomType"]'
+  );
+
+const westernSizeInputs =
+  document.querySelectorAll(
+    'input[name="westernSize"]'
+  );
+
+const japaneseSizeInputs =
+  document.querySelectorAll(
+    'input[name="japaneseSize"]'
+  );
+
+const westernSizeOptions =
+  document.getElementById("westernSizeOptions");
+
+const japaneseSizeOptions =
+  document.getElementById("japaneseSizeOptions");
+
+const sizeTypeMessage =
+  document.getElementById("sizeTypeMessage");
+
+const sizeScoreDisplay =
+  document.getElementById("sizeScoreDisplay");
+
+const sizeTotalScore =
+  document.getElementById("sizeTotalScore");
+
+/* ==================================
+   お食事ダイアログ
+================================== */
+
+const mealDialog =
+  document.getElementById("mealDialog");
+
+const closeMealDialogButton =
+  document.getElementById("closeMealDialogButton");
+
+const mealNoneCheckbox =
+  document.getElementById("mealNoneCheckbox");
+
+const mealScoreInputArea =
+  document.getElementById("mealScoreInputArea");
+
+const mealScoreInput =
+  document.getElementById("mealScoreInput");
+
+const cancelMealButton =
+  document.getElementById("cancelMealButton");
+
+const clearMealButton =
+  document.getElementById("clearMealButton");
+
+const applyMealButton =
+  document.getElementById("applyMealButton");
+
+/* ==================================
+   位置設定ダイアログ
+================================== */
 
 const openLocationDialogButton =
   document.getElementById("openLocationDialogButton");
@@ -253,38 +360,68 @@ const clearLocationButton =
 const applyLocationButton =
   document.getElementById("applyLocationButton");
 
-/* 必須要素確認 */
+/* ==================================
+   必須要素確認
+================================== */
+
+const requiredElements = [
+  pageTitle,
+  hotelForm,
+  hotelNameInput,
+  prefectureSelect,
+  addressInput,
+  stayDateInput,
+  saveButton,
+  totalScoreElement,
+  rankBadge,
+  repeatMessage,
+  repeatNormal,
+  repeatIntense,
+  formMessage,
+
+  scoreDialog,
+  dialogTitle,
+  categoryScoreInput,
+  clearScoreButton,
+  applyScoreButton,
+
+  sizeDialog,
+  closeSizeDialogButton,
+  cancelSizeButton,
+  clearSizeButton,
+  applySizeButton,
+  westernSizeOptions,
+  japaneseSizeOptions,
+  sizeTypeMessage,
+  sizeScoreDisplay,
+  sizeTotalScore,
+
+  mealDialog,
+  closeMealDialogButton,
+  mealNoneCheckbox,
+  mealScoreInputArea,
+  mealScoreInput,
+  cancelMealButton,
+  clearMealButton,
+  applyMealButton,
+
+  openLocationDialogButton,
+  locationStatus,
+  locationDialog,
+  closeLocationDialogButton,
+  locationSearchInput,
+  locationSearchButton,
+  locationSearchMessage,
+  latitudeDisplay,
+  longitudeDisplay,
+  clearLocationButton,
+  applyLocationButton
+];
 
 if (
-  !pageTitle ||
-  !hotelForm ||
-  !hotelNameInput ||
-  !prefectureSelect ||
-  !addressInput ||
-  !stayDateInput ||
-  !saveButton ||
-  !totalScoreElement ||
-  !rankBadge ||
-  !repeatMessage ||
-  !repeatNormal ||
-  !repeatIntense ||
-  !formMessage ||
-  !scoreDialog ||
-  !dialogTitle ||
-  !categoryScoreInput ||
-  !clearScoreButton ||
-  !applyScoreButton ||
-  !openLocationDialogButton ||
-  !locationStatus ||
-  !locationDialog ||
-  !closeLocationDialogButton ||
-  !locationSearchInput ||
-  !locationSearchButton ||
-  !locationSearchMessage ||
-  !latitudeDisplay ||
-  !longitudeDisplay ||
-  !clearLocationButton ||
-  !applyLocationButton
+  requiredElements.some(
+    (element) => !element
+  )
 ) {
   throw new Error(
     "評価画面に必要なHTML要素が見つかりません。"
@@ -305,7 +442,11 @@ initializePage();
 
 function initializePage() {
   createPrefectureOptions();
+
   setupCategoryButtons();
+  setupGenericScoreDialog();
+  setupSizeDialog();
+  setupMealDialog();
   setupRepeatControls();
   setupLocationControls();
 
@@ -315,11 +456,12 @@ function initializePage() {
     initializeNewMode();
   }
 
+  updateAllCategoryDisplays();
   updateEvaluation();
 }
 
 /* ==================================
-   新規登録モード
+   新規モード
 ================================== */
 
 function initializeNewMode() {
@@ -333,6 +475,9 @@ function initializeNewMode() {
     "評価を保存";
 
   setDefaultDate();
+
+  updateLocationStatus();
+  updateCoordinateDisplay();
 }
 
 /* ==================================
@@ -350,7 +495,15 @@ function initializeEditMode() {
     );
 
   if (!editingHotel) {
-    showEditDataError();
+    pageTitle.textContent =
+      "評価編集";
+
+    saveButton.disabled = true;
+
+    showFormError(
+      "編集するホテルデータが見つかりませんでした。"
+    );
+
     return;
   }
 
@@ -391,14 +544,65 @@ function fillEditingHotelData(hotel) {
 
       scores[category] =
         isValidScore(value)
-          ? roundToThree(Number(value))
+          ? roundToThree(value)
           : null;
-
-      updateCategoryDisplay(
-        category
-      );
     }
   );
+
+  /*
+    旧データにsizeがない場合
+  */
+
+  if (
+    scores.size === null &&
+    isValidScore(hotel.sizeScore)
+  ) {
+    scores.size =
+      roundToThree(
+        hotel.sizeScore
+      );
+  }
+
+  /*
+    広さ内訳
+  */
+
+  if (
+    hotel.sizeDetails &&
+    typeof hotel.sizeDetails === "object"
+  ) {
+    sizeDetails =
+      normalizeSizeDetails(
+        hotel.sizeDetails
+      );
+
+    scores.size =
+      sizeDetails.score;
+  } else if (
+    scores.size !== null
+  ) {
+    sizeDetails = {
+      roomType:
+        hotel.roomType ??
+        "western",
+
+      score:
+        scores.size
+    };
+  } else {
+    sizeDetails = null;
+  }
+
+  /*
+    食事なし
+  */
+
+  mealExcluded =
+    hotel.mealExcluded === true;
+
+  if (mealExcluded) {
+    scores.meal = null;
+  }
 
   setRepeatSelection(
     hotel.repeatType ?? "none"
@@ -419,29 +623,16 @@ function fillEditingHotelData(hotel) {
 
     selectedLongitude =
       roundCoordinate(longitude);
-
-    updateLocationStatus();
-    updateCoordinateDisplay();
   } else {
     clearLocationValues();
   }
-}
 
-function showEditDataError() {
-  pageTitle.textContent =
-    "評価編集";
-
-  saveButton.disabled = true;
-
-  formMessage.style.color =
-    "#d32f2f";
-
-  formMessage.textContent =
-    "編集するホテルデータが見つかりませんでした。";
+  updateLocationStatus();
+  updateCoordinateDisplay();
 }
 
 /* ==================================
-   都道府県選択肢
+   都道府県
 ================================== */
 
 function createPrefectureOptions() {
@@ -488,7 +679,7 @@ prefectureSelect.addEventListener(
 );
 
 /* ==================================
-   宿泊日
+   日付
 ================================== */
 
 function setDefaultDate() {
@@ -513,7 +704,7 @@ function setDefaultDate() {
 }
 
 /* ==================================
-   評価項目
+   評価項目ボタン
 ================================== */
 
 function setupCategoryButtons() {
@@ -532,7 +723,17 @@ function setupCategoryButtons() {
             return;
           }
 
-          openScoreDialog(
+          if (category === "size") {
+            openSizeDialog();
+            return;
+          }
+
+          if (category === "meal") {
+            openMealDialog();
+            return;
+          }
+
+          openGenericScoreDialog(
             category
           );
         }
@@ -541,7 +742,83 @@ function setupCategoryButtons() {
   );
 }
 
-function openScoreDialog(category) {
+function updateAllCategoryDisplays() {
+  Object.keys(scores).forEach(
+    updateCategoryDisplay
+  );
+}
+
+function updateCategoryDisplay(category) {
+  const button =
+    document.querySelector(
+      `[data-category="${category}"]`
+    );
+
+  const valueElement =
+    button?.querySelector(
+      ".category-value"
+    );
+
+  if (!valueElement) {
+    return;
+  }
+
+  if (
+    category === "meal" &&
+    mealExcluded
+  ) {
+    valueElement.textContent =
+      "食事なし";
+
+    return;
+  }
+
+  const score =
+    scores[category];
+
+  valueElement.textContent =
+    score === null
+      ? "未評価"
+      : score.toFixed(3);
+}
+
+/* ==================================
+   通常の数字入力
+================================== */
+
+function setupGenericScoreDialog() {
+  applyScoreButton.addEventListener(
+    "click",
+    applyGenericScore
+  );
+
+  clearScoreButton.addEventListener(
+    "click",
+    clearGenericScore
+  );
+
+  categoryScoreInput.addEventListener(
+    "keydown",
+    (event) => {
+      if (event.key !== "Enter") {
+        return;
+      }
+
+      event.preventDefault();
+
+      applyGenericScore();
+    }
+  );
+
+  scoreDialog.addEventListener(
+    "close",
+    () => {
+      activeCategory = null;
+    }
+  );
+}
+
+function openGenericScoreDialog(category) {
   activeCategory =
     category;
 
@@ -567,287 +844,494 @@ function openScoreDialog(category) {
   );
 }
 
-applyScoreButton.addEventListener(
-  "click",
-  () => {
-    if (!activeCategory) {
-      return;
-    }
-
-    const inputValue =
-      categoryScoreInput.value.trim();
-
-    const score =
-      Number(inputValue);
-
-    if (
-      inputValue === "" ||
-      !isValidScore(score)
-    ) {
-      formMessage.style.color =
-        "#d32f2f";
-
-      formMessage.textContent =
-        "評価は0.000から5.000の間で入力してください。";
-
-      return;
-    }
-
-    scores[activeCategory] =
-      roundToThree(score);
-
-    updateCategoryDisplay(
-      activeCategory
-    );
-
-    updateEvaluation();
-
-    clearFormMessage();
-
-    scoreDialog.close();
-  }
-);
-
-clearScoreButton.addEventListener(
-  "click",
-  () => {
-    if (!activeCategory) {
-      return;
-    }
-
-    scores[activeCategory] =
-      null;
-
-    updateCategoryDisplay(
-      activeCategory
-    );
-
-    updateEvaluation();
-
-    clearFormMessage();
-
-    scoreDialog.close();
-  }
-);
-
-categoryScoreInput.addEventListener(
-  "keydown",
-  (event) => {
-    if (event.key === "Enter") {
-      event.preventDefault();
-      applyScoreButton.click();
-    }
-  }
-);
-
-scoreDialog.addEventListener(
-  "close",
-  () => {
-    activeCategory = null;
-  }
-);
-
-function updateCategoryDisplay(
-  category
-) {
-  const button =
-    document.querySelector(
-      `[data-category="${category}"]`
-    );
-
-  const valueElement =
-    button?.querySelector(
-      ".category-value"
-    );
-
-  if (!valueElement) {
+function applyGenericScore() {
+  if (!activeCategory) {
     return;
   }
 
-  const score =
-    scores[category];
+  const valueText =
+    categoryScoreInput.value.trim();
 
-  valueElement.textContent =
-    score === null
-      ? "未評価"
-      : score.toFixed(3);
+  const value =
+    Number(valueText);
+
+  if (
+    valueText === "" ||
+    !isValidScore(value)
+  ) {
+    showFormError(
+      "評価は0.000から5.000の間で入力してください。"
+    );
+
+    return;
+  }
+
+  scores[activeCategory] =
+    roundToThree(value);
+
+  updateCategoryDisplay(
+    activeCategory
+  );
+
+  updateEvaluation();
+  clearFormMessage();
+
+  scoreDialog.close();
+}
+
+function clearGenericScore() {
+  if (!activeCategory) {
+    return;
+  }
+
+  scores[activeCategory] =
+    null;
+
+  updateCategoryDisplay(
+    activeCategory
+  );
+
+  updateEvaluation();
+  clearFormMessage();
+
+  scoreDialog.close();
 }
 
 /* ==================================
-   リピートポイント
+   広さ
 ================================== */
 
-function setupRepeatControls() {
-  document
-    .querySelectorAll(
-      'input[name="repeatType"]'
-    )
-    .forEach(
-      (input) => {
-        input.addEventListener(
-          "change",
-          updateEvaluation
-        );
-      }
-    );
-}
+function normalizeSizeDetails(source) {
+  const result =
+    createDefaultSizeDetails();
 
-function setRepeatSelection(type) {
-  const radio =
-    document.querySelector(
-      `input[name="repeatType"][value="${type}"]`
-    );
-
-  if (radio) {
-    radio.checked = true;
-  } else {
-    resetRepeatSelection();
-  }
-}
-
-function updateRepeatEligibility(
-  normalScore
-) {
-  const scoreValues =
-    Object.values(scores);
-
-  const allEvaluated =
-    scoreValues.every(
-      (score) =>
-        score !== null
-    );
-
-  const allAtLeast4300 =
-    allEvaluated &&
-    scoreValues.every(
-      (score) =>
-        score >= 4.300
-    );
-
-  const canNormal =
-    allAtLeast4300 &&
-    normalScore !== null &&
-    normalScore >= 4.500;
-
-  const canIntense =
-    allAtLeast4300 &&
-    normalScore !== null &&
-    normalScore >= 4.800;
-
-  repeatNormal.disabled =
-    !canNormal;
-
-  repeatIntense.disabled =
-    !canIntense;
-
-  if (!allEvaluated) {
-    resetRepeatSelection();
-
-    repeatMessage.textContent =
-      "6項目すべてを入力すると、自動判定します。";
-
-    return;
-  }
-
-  if (!allAtLeast4300) {
-    resetRepeatSelection();
-
-    repeatMessage.textContent =
-      "4.300未満の項目があるため、リピートポイントは付与できません。";
-
-    return;
-  }
-
-  if (!canNormal) {
-    resetRepeatSelection();
-
-    repeatMessage.textContent =
-      "通常評価が4.500未満のため、リピートポイントは付与できません。";
-
-    return;
-  }
-
-  if (canIntense) {
-    repeatMessage.textContent =
-      "リピあり・激リピありを選択できます。";
-  } else {
-    repeatMessage.textContent =
-      "リピありを選択できます。激リピありには通常評価4.800以上が必要です。";
-  }
-
-  const selectedType =
-    getSelectedRepeatType();
+  const allowedTypes = [
+    "western",
+    "japanese",
+    "mixed"
+  ];
 
   if (
-    selectedType === "intense" &&
-    !canIntense
+    allowedTypes.includes(
+      source.roomType
+    )
   ) {
-    resetRepeatSelection();
+    result.roomType =
+      source.roomType;
   }
+
+  const allowedScores = [
+    2,
+    2.5,
+    3,
+    3.5,
+    4,
+    5
+  ];
+
+  const sourceScore =
+    Number(source.score);
+
+  if (
+    allowedScores.includes(
+      sourceScore
+    )
+  ) {
+    result.score =
+      sourceScore;
+  }
+
+  return result;
 }
 
-function resetRepeatSelection() {
-  const noneRadio =
-    document.querySelector(
-      'input[name="repeatType"][value="none"]'
+function copySizeDetails(source) {
+  return {
+    roomType:
+      source.roomType,
+
+    score:
+      source.score
+  };
+}
+
+function setupSizeDialog() {
+  roomTypeInputs.forEach(
+    (input) => {
+      input.addEventListener(
+        "change",
+        () => {
+          sizeDraft.roomType =
+            input.value;
+
+          updateSizeDialogDisplay();
+        }
+      );
+    }
+  );
+
+  westernSizeInputs.forEach(
+    (input) => {
+      input.addEventListener(
+        "change",
+        () => {
+          if (
+            sizeDraft.roomType ===
+            "japanese"
+          ) {
+            return;
+          }
+
+          sizeDraft.score =
+            Number(input.value);
+
+          updateSizeDialogDisplay();
+        }
+      );
+    }
+  );
+
+  japaneseSizeInputs.forEach(
+    (input) => {
+      input.addEventListener(
+        "change",
+        () => {
+          if (
+            sizeDraft.roomType !==
+            "japanese"
+          ) {
+            return;
+          }
+
+          sizeDraft.score =
+            Number(input.value);
+
+          updateSizeDialogDisplay();
+        }
+      );
+    }
+  );
+
+  closeSizeDialogButton.addEventListener(
+    "click",
+    cancelSizeChanges
+  );
+
+  cancelSizeButton.addEventListener(
+    "click",
+    cancelSizeChanges
+  );
+
+  clearSizeButton.addEventListener(
+    "click",
+    clearSizeScore
+  );
+
+  applySizeButton.addEventListener(
+    "click",
+    applySizeScore
+  );
+}
+
+function openSizeDialog() {
+  sizeDraft =
+    sizeDetails
+      ? copySizeDetails(
+          sizeDetails
+        )
+      : createDefaultSizeDetails();
+
+  updateSizeDialogDisplay();
+
+  sizeDialog.showModal();
+}
+
+function cancelSizeChanges() {
+  sizeDialog.close();
+}
+
+function clearSizeScore() {
+  sizeDetails = null;
+  scores.size = null;
+
+  updateCategoryDisplay(
+    "size"
+  );
+
+  updateEvaluation();
+
+  sizeDialog.close();
+}
+
+function applySizeScore() {
+  sizeDetails =
+    copySizeDetails(
+      sizeDraft
     );
 
-  if (noneRadio) {
-    noneRadio.checked = true;
-  }
-}
-
-function getSelectedRepeatType() {
-  const selectedRadio =
-    document.querySelector(
-      'input[name="repeatType"]:checked'
+  scores.size =
+    roundToThree(
+      sizeDetails.score
     );
 
-  return selectedRadio?.value ??
-    "none";
+  updateCategoryDisplay(
+    "size"
+  );
+
+  updateEvaluation();
+
+  sizeDialog.close();
 }
 
-function getRepeatPoint(type) {
-  if (type === "normal") {
-    return 0.050;
+function updateSizeDialogDisplay() {
+  roomTypeInputs.forEach(
+    (input) => {
+      input.checked =
+        input.value ===
+        sizeDraft.roomType;
+    }
+  );
+
+  const isJapanese =
+    sizeDraft.roomType ===
+    "japanese";
+
+  westernSizeOptions.hidden =
+    isJapanese;
+
+  japaneseSizeOptions.hidden =
+    !isJapanese;
+
+  if (
+    sizeDraft.roomType ===
+    "japanese"
+  ) {
+    sizeTypeMessage.textContent =
+      "和室の広さを畳数で選択";
+  } else if (
+    sizeDraft.roomType ===
+    "mixed"
+  ) {
+    sizeTypeMessage.textContent =
+      "和洋室の広さを㎡で選択";
+  } else {
+    sizeTypeMessage.textContent =
+      "洋室の広さを㎡で選択";
   }
 
-  if (type === "intense") {
-    return 0.100;
+  const selector =
+    isJapanese
+      ? `input[name="japaneseSize"][value="${sizeDraft.score}"]`
+      : `input[name="westernSize"][value="${sizeDraft.score}"]`;
+
+  const selectedInput =
+    document.querySelector(selector);
+
+  if (selectedInput) {
+    selectedInput.checked = true;
   }
 
-  return 0;
+  sizeScoreDisplay.textContent =
+    Number(
+      sizeDraft.score
+    ).toFixed(3);
+
+  sizeTotalScore.textContent =
+    Number(
+      sizeDraft.score
+    ).toFixed(3);
+}
+
+/* ==================================
+   お食事
+================================== */
+
+function setupMealDialog() {
+  mealNoneCheckbox.addEventListener(
+    "change",
+    () => {
+      mealDraftExcluded =
+        mealNoneCheckbox.checked;
+
+      updateMealDialogDisplay();
+    }
+  );
+
+  closeMealDialogButton.addEventListener(
+    "click",
+    cancelMealChanges
+  );
+
+  cancelMealButton.addEventListener(
+    "click",
+    cancelMealChanges
+  );
+
+  clearMealButton.addEventListener(
+    "click",
+    clearMealScore
+  );
+
+  applyMealButton.addEventListener(
+    "click",
+    applyMealScore
+  );
+
+  mealScoreInput.addEventListener(
+    "keydown",
+    (event) => {
+      if (event.key !== "Enter") {
+        return;
+      }
+
+      event.preventDefault();
+
+      applyMealScore();
+    }
+  );
+}
+
+function openMealDialog() {
+  mealDraftExcluded =
+    mealExcluded;
+
+  mealDraftScore =
+    scores.meal;
+
+  mealNoneCheckbox.checked =
+    mealDraftExcluded;
+
+  mealScoreInput.value =
+    mealDraftScore === null
+      ? ""
+      : mealDraftScore.toFixed(3);
+
+  updateMealDialogDisplay();
+
+  mealDialog.showModal();
+}
+
+function cancelMealChanges() {
+  mealDialog.close();
+}
+
+function clearMealScore() {
+  mealExcluded = false;
+  scores.meal = null;
+
+  updateCategoryDisplay(
+    "meal"
+  );
+
+  updateEvaluation();
+
+  mealDialog.close();
+}
+
+function applyMealScore() {
+  if (mealDraftExcluded) {
+    mealExcluded = true;
+    scores.meal = null;
+
+    updateCategoryDisplay(
+      "meal"
+    );
+
+    updateEvaluation();
+    clearFormMessage();
+
+    mealDialog.close();
+    return;
+  }
+
+  const valueText =
+    mealScoreInput.value.trim();
+
+  const value =
+    Number(valueText);
+
+  if (
+    valueText === "" ||
+    !isValidScore(value)
+  ) {
+    showFormError(
+      "お食事の評価は0.000から5.000の間で入力してください。"
+    );
+
+    return;
+  }
+
+  mealExcluded = false;
+
+  scores.meal =
+    roundToThree(value);
+
+  updateCategoryDisplay(
+    "meal"
+  );
+
+  updateEvaluation();
+  clearFormMessage();
+
+  mealDialog.close();
+}
+
+function updateMealDialogDisplay() {
+  mealNoneCheckbox.checked =
+    mealDraftExcluded;
+
+  mealScoreInputArea.classList.toggle(
+    "meal-score-disabled",
+    mealDraftExcluded
+  );
+
+  mealScoreInput.disabled =
+    mealDraftExcluded;
 }
 
 /* ==================================
    総合評価
 ================================== */
 
-function calculateNormalScore() {
-  const values =
-    Object.values(scores);
+function getEvaluatedScores() {
+  return Object.entries(scores)
+    .filter(([category, score]) => {
+      if (score === null) {
+        return false;
+      }
 
-  const evaluatedValues =
-    values.filter(
-      (score) =>
-        score !== null
-    );
+      if (
+        category === "meal" &&
+        mealExcluded
+      ) {
+        return false;
+      }
+
+      return true;
+    })
+    .map(([, score]) => score);
+}
+
+function calculateNormalScore() {
+  const evaluatedScores =
+    getEvaluatedScores();
 
   if (
-    evaluatedValues.length === 0
+    evaluatedScores.length === 0
   ) {
     return null;
   }
 
   const total =
-    evaluatedValues.reduce(
+    evaluatedScores.reduce(
       (sum, score) =>
         sum + score,
       0
     );
 
-  return total /
-    evaluatedValues.length;
+  return roundToThree(
+    total /
+    evaluatedScores.length
+  );
 }
 
 function updateEvaluation() {
@@ -863,7 +1347,6 @@ function updateEvaluation() {
       "---";
 
     updateRankBadge(null);
-
     return;
   }
 
@@ -888,6 +1371,160 @@ function updateEvaluation() {
     finalScore
   );
 }
+
+/* ==================================
+   リピートポイント
+================================== */
+
+function setupRepeatControls() {
+  document
+    .querySelectorAll(
+      'input[name="repeatType"]'
+    )
+    .forEach((input) => {
+      input.addEventListener(
+        "change",
+        updateEvaluation
+      );
+    });
+}
+
+function setRepeatSelection(type) {
+  const input =
+    document.querySelector(
+      `input[name="repeatType"][value="${type}"]`
+    );
+
+  if (input) {
+    input.checked = true;
+  } else {
+    resetRepeatSelection();
+  }
+}
+
+function getSelectedRepeatType() {
+  const input =
+    document.querySelector(
+      'input[name="repeatType"]:checked'
+    );
+
+  return input?.value ?? "none";
+}
+
+function resetRepeatSelection() {
+  const noneInput =
+    document.querySelector(
+      'input[name="repeatType"][value="none"]'
+    );
+
+  if (noneInput) {
+    noneInput.checked = true;
+  }
+}
+
+function getRepeatPoint(type) {
+  if (type === "normal") {
+    return 0.050;
+  }
+
+  if (type === "intense") {
+    return 0.100;
+  }
+
+  return 0;
+}
+
+function updateRepeatEligibility(
+  normalScore
+) {
+  const requiredCategories = [
+    "room",
+    "size",
+    "service",
+    "bath",
+    "facility",
+    "satisfaction"
+  ];
+
+  const requiredComplete =
+    requiredCategories.every(
+      (category) =>
+        scores[category] !== null
+    );
+
+  const evaluatedScores =
+    getEvaluatedScores();
+
+  const allAtLeast4300 =
+    requiredComplete &&
+    evaluatedScores.every(
+      (score) =>
+        score >= 4.300
+    );
+
+  const canNormal =
+    allAtLeast4300 &&
+    normalScore !== null &&
+    normalScore >= 4.500;
+
+  const canIntense =
+    allAtLeast4300 &&
+    normalScore !== null &&
+    normalScore >= 4.800;
+
+  repeatNormal.disabled =
+    !canNormal;
+
+  repeatIntense.disabled =
+    !canIntense;
+
+  if (!requiredComplete) {
+    resetRepeatSelection();
+
+    repeatMessage.textContent =
+      "お食事以外の6項目を入力すると、自動判定します。";
+
+    return;
+  }
+
+  if (!allAtLeast4300) {
+    resetRepeatSelection();
+
+    repeatMessage.textContent =
+      "4.300未満の評価があるため、リピートポイントは付与できません。";
+
+    return;
+  }
+
+  if (!canNormal) {
+    resetRepeatSelection();
+
+    repeatMessage.textContent =
+      "通常評価が4.500未満のため、リピートポイントは付与できません。";
+
+    return;
+  }
+
+  if (canIntense) {
+    repeatMessage.textContent =
+      "リピあり・激リピありを選択できます。";
+  } else {
+    repeatMessage.textContent =
+      "リピありを選択できます。";
+  }
+
+  if (
+    getSelectedRepeatType() ===
+      "intense" &&
+    !canIntense
+  ) {
+    resetRepeatSelection();
+  }
+}
+
+/* ==================================
+   ランク
+================================== */
 
 function getRank(score) {
   if (score >= 4.800) {
@@ -935,17 +1572,14 @@ function updateRankBadge(score) {
     `rank-${rank}`
   );
 
-  if (score > 5.000) {
-    rankBadge.textContent =
-      "👑 殿堂入り";
-  } else {
-    rankBadge.textContent =
-      `総合ランク${rank}`;
-  }
+  rankBadge.textContent =
+    score > 5.000
+      ? "👑 殿堂入り"
+      : `総合ランク${rank}`;
 }
 
 /* ==================================
-   位置設定
+   地図
 ================================== */
 
 function setupLocationControls() {
@@ -969,10 +1603,13 @@ function setupLocationControls() {
   locationSearchInput.addEventListener(
     "keydown",
     (event) => {
-      if (event.key === "Enter") {
-        event.preventDefault();
-        handleLocationSearch();
+      if (event.key !== "Enter") {
+        return;
       }
+
+      event.preventDefault();
+
+      handleLocationSearch();
     }
   );
 
@@ -1055,6 +1692,7 @@ function initializeLocationMap() {
     "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
     {
       maxZoom: 19,
+
       attribution:
         '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }
@@ -1373,6 +2011,61 @@ hotelForm.addEventListener(
   }
 );
 
+function validateForm() {
+  if (
+    hotelNameInput.value.trim() === ""
+  ) {
+    return "ホテル・旅館名を入力してください。";
+  }
+
+  if (
+    prefectureSelect.value === ""
+  ) {
+    return "都道府県を選択してください。";
+  }
+
+  if (
+    stayDateInput.value === ""
+  ) {
+    return "宿泊日を入力してください。";
+  }
+
+  const requiredCategories = [
+    "room",
+    "size",
+    "service",
+    "bath",
+    "facility",
+    "satisfaction"
+  ];
+
+  const missingRequired =
+    requiredCategories.some(
+      (category) =>
+        scores[category] === null
+    );
+
+  if (missingRequired) {
+    return "お食事以外の6つの評価項目を入力してください。";
+  }
+
+  if (
+    !mealExcluded &&
+    scores.meal === null
+  ) {
+    return "お食事を評価するか、「食事なし」を選択してください。";
+  }
+
+  if (
+    selectedLatitude === null ||
+    selectedLongitude === null
+  ) {
+    return "地図上の位置を設定してください。";
+  }
+
+  return "";
+}
+
 function createHotelData({
   selectedPrefecture,
   normalScore,
@@ -1417,10 +2110,23 @@ function createHotelData({
       ...scores
     },
 
-    normalScore:
-      roundToThree(
-        normalScore
-      ),
+    sizeDetails:
+      sizeDetails
+        ? copySizeDetails(
+            sizeDetails
+          )
+        : null,
+
+    roomType:
+      sizeDetails?.roomType ??
+      null,
+
+    sizeScore:
+      scores.size,
+
+    mealExcluded,
+
+    normalScore,
 
     repeatType,
 
@@ -1445,45 +2151,6 @@ function createHotelData({
   };
 }
 
-function validateForm() {
-  if (
-    hotelNameInput.value.trim() === ""
-  ) {
-    return "ホテル・旅館名を入力してください。";
-  }
-
-  if (
-    prefectureSelect.value === ""
-  ) {
-    return "都道府県を選択してください。";
-  }
-
-  if (
-    stayDateInput.value === ""
-  ) {
-    return "宿泊日を入力してください。";
-  }
-
-  const allScoresEntered =
-    Object.values(scores).every(
-      (score) =>
-        score !== null
-    );
-
-  if (!allScoresEntered) {
-    return "6つの評価項目をすべて入力してください。";
-  }
-
-  if (
-    selectedLatitude === null ||
-    selectedLongitude === null
-  ) {
-    return "地図上の位置を設定してください。";
-  }
-
-  return "";
-}
-
 /* ==================================
    localStorage
 ================================== */
@@ -1501,25 +2168,23 @@ function addStoredHotel(hotelData) {
   );
 }
 
-function updateStoredHotel(
-  hotelData
-) {
+function updateStoredHotel(hotelData) {
   const hotels =
     getStoredHotels();
 
-  const hotelIndex =
+  const index =
     hotels.findIndex(
       (hotel) =>
         hotel.id === editId
     );
 
-  if (hotelIndex === -1) {
+  if (index === -1) {
     throw new Error(
       "更新するホテルが見つかりません。"
     );
   }
 
-  hotels[hotelIndex] =
+  hotels[index] =
     hotelData;
 
   saveStoredHotels(
@@ -1562,14 +2227,13 @@ function saveStoredHotels(hotels) {
 }
 
 /* ==================================
-   ID作成
+   共通処理
 ================================== */
 
 function createHotelId() {
   if (
     typeof crypto !== "undefined" &&
-    typeof crypto.randomUUID ===
-      "function"
+    typeof crypto.randomUUID === "function"
   ) {
     return crypto.randomUUID();
   }
@@ -1578,10 +2242,6 @@ function createHotelId() {
     .toString(16)
     .slice(2)}`;
 }
-
-/* ==================================
-   メッセージ
-================================== */
 
 function clearFormMessage() {
   formMessage.textContent = "";
@@ -1604,11 +2264,15 @@ function showFormSuccess(message) {
     message;
 }
 
-/* ==================================
-   数値確認
-================================== */
-
 function isValidScore(value) {
+  if (
+    value === null ||
+    value === undefined ||
+    value === ""
+  ) {
+    return false;
+  }
+
   const number =
     Number(value);
 
@@ -1637,15 +2301,17 @@ function isValidLongitude(value) {
 
 function roundToThree(value) {
   return Math.round(
-    (Number(value) +
-      Number.EPSILON) *
-      1000
+    (
+      Number(value) +
+      Number.EPSILON
+    ) *
+    1000
   ) / 1000;
 }
 
 function roundCoordinate(value) {
   return Math.round(
     Number(value) *
-      1000000
+    1000000
   ) / 1000000;
 }
