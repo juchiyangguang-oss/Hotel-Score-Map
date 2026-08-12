@@ -10,7 +10,24 @@
     content="width=device-width, initial-scale=1.0"
   >
 
-  <title>ホテル・地域検索 | Hotel Score Map</title>
+  <title>Hotel Score Map</title>
+
+
+  <!-- ==============================
+       Leaflet
+  ============================== -->
+
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  >
+
+
+  <!-- ==============================
+       CSS
+  ============================== -->
 
   <link
     rel="stylesheet"
@@ -19,271 +36,213 @@
 
   <link
     rel="stylesheet"
-    href="css/list.css"
+    href="css/home.css"
   >
 
 </head>
 
+
 <body>
 
-<header class="app-header">
 
-<h1 class="app-title">
-ホテル・地域検索
-</h1>
+  <!-- ==============================
+       ヘッダー
+  ============================== -->
 
-</header>
+  <header class="app-header">
 
-<main class="main-content">
+    <h1 class="app-title">
+      Hotel Score Map
+    </h1>
 
-<section class="list-page">
+  </header>
 
-<!-- ==================================
-     検索
-================================== -->
 
-<div class="search-panel">
+  <!-- ==============================
+       メイン
+  ============================== -->
 
-<label
-for="hotelSearch"
-class="search-label"
->
-ホテル名・地域・住所を検索
-</label>
+  <main class="main-content">
 
-<div class="search-row">
+    <section class="home-page">
 
-<input
-type="search"
-id="hotelSearch"
-class="search-input"
-placeholder="例：天童、湯田中、長野県"
-autocomplete="off"
->
 
-<button
-type="button"
-id="clearSearchButton"
-class="clear-search-button"
->
-クリア
-</button>
+      <!-- ==============================
+           地図ヘッダー
+      ============================== -->
 
-</div>
+      <div class="map-header">
 
-<p
-id="searchStatus"
-class="search-status"
-aria-live="polite"
->
-ホテル名・地域・住所から検索できます
-</p>
+        <div>
 
-</div>
+          <p class="map-heading">
+            宿泊施設マップ
+          </p>
 
+          <p class="map-description">
+            登録したホテル・旅館の位置を表示します
+          </p>
 
-<!-- ==================================
-     検索結果
-================================== -->
+        </div>
 
-<section
-id="searchResultSection"
-class="search-result-section"
-hidden
->
 
-<div class="section-heading-row">
+        <button
+          type="button"
+          id="resetMapButton"
+          class="reset-map-button"
+        >
+          全国表示
+        </button>
 
-<h2>
-検索結果
-</h2>
+      </div>
 
-<span
-id="searchResultCount"
-class="result-count"
->
-0施設
-</span>
 
-</div>
+      <!-- ==============================
+           地図
+      ============================== -->
 
-<div
-id="hotelSearchResults"
-class="hotel-search-results"
-></div>
+      <div
+        id="hotelMap"
+        class="hotel-map"
+        aria-label="登録済みホテルの地図"
+      ></div>
 
-</section>
 
+      <!-- ==============================
+           集計
+      ============================== -->
 
-<!-- ==================================
-     すべてのホテル
-================================== -->
+      <div class="home-summary">
 
-<section
-id="allHotelsSection"
-class="all-hotels-section"
->
 
-<div class="section-heading-row all-hotels-heading">
+        <div class="summary-item">
 
-<h2>
-すべてのホテル
-</h2>
+          <span class="summary-label">
+            宿泊記録
+          </span>
 
-<div class="all-hotels-controls">
+          <strong
+            id="registeredHotelCount"
+            class="summary-value"
+          >
+            0件
+          </strong>
 
-<label
-for="allHotelsSort"
-class="sort-label"
->
-並び替え
-</label>
+        </div>
 
-<select
-id="allHotelsSort"
-class="sort-select"
->
 
-<option value="score-desc">
-評価が高い順
-</option>
+        <div class="summary-item">
 
-<option value="score-asc">
-評価が低い順
-</option>
+          <span class="summary-label">
+            登録施設
+          </span>
 
-<option value="date-desc">
-最新宿泊日が新しい順
-</option>
+          <strong
+            id="displayedPinCount"
+            class="summary-value"
+          >
+            0施設
+          </strong>
 
-<option value="date-asc">
-最新宿泊日が古い順
-</option>
+        </div>
 
-<option value="count-desc">
-宿泊回数が多い順
-</option>
 
-<option value="name">
-ホテル名順
-</option>
+      </div>
 
-</select>
 
-<span
-id="allHotelsCount"
-class="result-count"
->
-0施設
-</span>
+      <!-- ==============================
+           地図状態
+      ============================== -->
 
-</div>
+      <p
+        id="mapStatus"
+        class="map-status"
+        aria-live="polite"
+      >
+        地図を準備しています
+      </p>
 
-</div>
 
-<div
-id="allHotelsList"
-class="hotel-search-results"
-aria-live="polite"
-></div>
+    </section>
 
-</section>
+  </main>
 
 
-<!-- ==================================
-     都道府県
-================================== -->
+  <!-- ==============================
+       下部ナビ
+  ============================== -->
 
-<section
-id="prefectureSection"
-class="prefecture-section"
->
+  <nav class="bottom-nav">
 
-<div class="section-heading-row">
 
-<h2>
-都道府県から選ぶ
-</h2>
+    <a
+      href="index.html"
+      class="nav-item active"
+    >
 
-<span
-id="prefectureHotelCount"
-class="result-count"
->
-0施設
-</span>
+      <span class="nav-icon">
+        ⌂
+      </span>
 
-</div>
+      <span class="nav-label">
+        ホーム
+      </span>
 
-<div
-id="prefList"
-class="pref-list"
-aria-live="polite"
-></div>
+    </a>
 
-</section>
 
-</section>
+    <a
+      href="list.html"
+      class="nav-item"
+    >
 
-</main>
+      <span class="nav-icon">
+        ≡
+      </span>
 
+      <span class="nav-label">
+        一覧
+      </span>
 
-<!-- ==================================
-     下部ナビ
-================================== -->
+    </a>
 
-<nav class="bottom-nav">
 
-<a
-href="index.html"
-class="nav-item"
->
+    <a
+      href="add.html"
+      class="nav-item"
+    >
 
-<span class="nav-icon">
-⌂
-</span>
+      <span class="nav-icon">
+        ＋
+      </span>
 
-<span class="nav-label">
-ホーム
-</span>
+      <span class="nav-label">
+        評価追加
+      </span>
 
-</a>
+    </a>
 
 
-<a
-href="list.html"
-class="nav-item active"
->
+  </nav>
 
-<span class="nav-icon">
-≡
-</span>
 
-<span class="nav-label">
-一覧
-</span>
+  <!-- ==============================
+       Leaflet
+  ============================== -->
 
-</a>
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+  ></script>
 
 
-<a
-href="add.html"
-class="nav-item"
->
+  <!-- ==============================
+       ホーム
+  ============================== -->
 
-<span class="nav-icon">
-＋
-</span>
+  <script src="js/home.js"></script>
 
-<span class="nav-label">
-評価追加
-</span>
-
-</a>
-
-</nav>
-
-
-<script src="js/list.js"></script>
 
 </body>
 
