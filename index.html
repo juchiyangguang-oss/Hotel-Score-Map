@@ -10,16 +10,7 @@
     content="width=device-width, initial-scale=1.0"
   >
 
-  <title>Hotel Score Map</title>
-
-  <!-- Leaflet -->
-
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-    crossorigin=""
-  >
+  <title>ホテル・地域検索 | Hotel Score Map</title>
 
   <link
     rel="stylesheet"
@@ -28,7 +19,7 @@
 
   <link
     rel="stylesheet"
-    href="css/home.css"
+    href="css/list.css"
   >
 
 </head>
@@ -38,100 +29,213 @@
 <header class="app-header">
 
 <h1 class="app-title">
-Hotel Score Map
+ホテル・地域検索
 </h1>
 
 </header>
 
 <main class="main-content">
 
-<section class="home-page">
+<section class="list-page">
 
-<div class="map-header">
+<!-- ==================================
+     検索
+================================== -->
 
-<div>
+<div class="search-panel">
 
-<p class="map-heading">
-宿泊施設マップ
-</p>
+<label
+for="hotelSearch"
+class="search-label"
+>
+ホテル名・地域・住所を検索
+</label>
 
-<p class="map-description">
-登録したホテル・旅館の位置を表示します
-</p>
+<div class="search-row">
 
-</div>
+<input
+type="search"
+id="hotelSearch"
+class="search-input"
+placeholder="例：天童、湯田中、長野県"
+autocomplete="off"
+>
 
 <button
 type="button"
-id="resetMapButton"
-class="reset-map-button"
+id="clearSearchButton"
+class="clear-search-button"
 >
-
-全国表示
-
+クリア
 </button>
 
 </div>
 
-<div
-id="hotelMap"
-class="hotel-map"
-aria-label="登録済みホテルの地図"
-></div>
-
-<div class="home-summary">
-
-<div class="summary-item">
-
-<span class="summary-label">
-宿泊記録
-</span>
-
-<strong
-id="registeredHotelCount"
-class="summary-value"
->
-0件
-</strong>
-
-</div>
-
-<div class="summary-item">
-
-<span class="summary-label">
-登録施設
-</span>
-
-<strong
-id="displayedPinCount"
-class="summary-value"
->
-0施設
-</strong>
-
-</div>
-
-</div>
-
 <p
-id="mapStatus"
-class="map-status"
+id="searchStatus"
+class="search-status"
 aria-live="polite"
 >
-
-地図を準備しています
-
+ホテル名・地域・住所から検索できます
 </p>
+
+</div>
+
+
+<!-- ==================================
+     検索結果
+================================== -->
+
+<section
+id="searchResultSection"
+class="search-result-section"
+hidden
+>
+
+<div class="section-heading-row">
+
+<h2>
+検索結果
+</h2>
+
+<span
+id="searchResultCount"
+class="result-count"
+>
+0施設
+</span>
+
+</div>
+
+<div
+id="hotelSearchResults"
+class="hotel-search-results"
+></div>
+
+</section>
+
+
+<!-- ==================================
+     すべてのホテル
+================================== -->
+
+<section
+id="allHotelsSection"
+class="all-hotels-section"
+>
+
+<div class="section-heading-row all-hotels-heading">
+
+<h2>
+すべてのホテル
+</h2>
+
+<div class="all-hotels-controls">
+
+<label
+for="allHotelsSort"
+class="sort-label"
+>
+並び替え
+</label>
+
+<select
+id="allHotelsSort"
+class="sort-select"
+>
+
+<option value="score-desc">
+評価が高い順
+</option>
+
+<option value="score-asc">
+評価が低い順
+</option>
+
+<option value="date-desc">
+最新宿泊日が新しい順
+</option>
+
+<option value="date-asc">
+最新宿泊日が古い順
+</option>
+
+<option value="count-desc">
+宿泊回数が多い順
+</option>
+
+<option value="name">
+ホテル名順
+</option>
+
+</select>
+
+<span
+id="allHotelsCount"
+class="result-count"
+>
+0施設
+</span>
+
+</div>
+
+</div>
+
+<div
+id="allHotelsList"
+class="hotel-search-results"
+aria-live="polite"
+></div>
+
+</section>
+
+
+<!-- ==================================
+     都道府県
+================================== -->
+
+<section
+id="prefectureSection"
+class="prefecture-section"
+>
+
+<div class="section-heading-row">
+
+<h2>
+都道府県から選ぶ
+</h2>
+
+<span
+id="prefectureHotelCount"
+class="result-count"
+>
+0施設
+</span>
+
+</div>
+
+<div
+id="prefList"
+class="pref-list"
+aria-live="polite"
+></div>
+
+</section>
 
 </section>
 
 </main>
 
+
+<!-- ==================================
+     下部ナビ
+================================== -->
+
 <nav class="bottom-nav">
 
 <a
 href="index.html"
-class="nav-item active"
+class="nav-item"
 >
 
 <span class="nav-icon">
@@ -144,9 +248,10 @@ class="nav-item active"
 
 </a>
 
+
 <a
 href="list.html"
-class="nav-item"
+class="nav-item active"
 >
 
 <span class="nav-icon">
@@ -158,6 +263,7 @@ class="nav-item"
 </span>
 
 </a>
+
 
 <a
 href="add.html"
@@ -176,13 +282,8 @@ class="nav-item"
 
 </nav>
 
-<script
-src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-crossorigin=""
-></script>
 
-<script src="js/home.js"></script>
+<script src="js/list.js"></script>
 
 </body>
 

@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
+
   <meta charset="UTF-8">
 
   <meta
@@ -8,26 +10,80 @@
     content="width=device-width, initial-scale=1.0"
   >
 
-  <title>都道府県別ホテル一覧 | Hotel Score Map</title>
+  <title>
+    都道府県別ホテル一覧 | Hotel Score Map
+  </title>
 
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/prefecture.css">
+
+  <!-- ==============================
+       PWA
+  ============================== -->
+
+  <link
+    rel="manifest"
+    href="manifest.json"
+  >
+
+  <meta
+    name="theme-color"
+    content="#ffffff"
+  >
+
+  <meta
+    name="apple-mobile-web-app-capable"
+    content="yes"
+  >
+
+  <meta
+    name="apple-mobile-web-app-status-bar-style"
+    content="default"
+  >
+
+  <meta
+    name="apple-mobile-web-app-title"
+    content="Hotel Score Map"
+  >
+
+
+  <!-- ==============================
+       CSS
+  ============================== -->
+
+  <link
+    rel="stylesheet"
+    href="css/style.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="css/prefecture.css"
+  >
+
 </head>
+
 
 <body>
 
   <header class="app-header">
+
     <h1
       id="prefectureTitle"
       class="app-title"
     >
       都道府県
     </h1>
+
   </header>
+
 
   <main class="main-content">
 
     <section class="prefecture-page">
+
+
+      <!-- ==============================
+           上部操作
+      ============================== -->
 
       <div class="prefecture-toolbar">
 
@@ -38,6 +94,7 @@
           ‹ 都道府県一覧
         </a>
 
+
         <div class="toolbar-right">
 
           <label
@@ -47,10 +104,12 @@
             並び替え
           </label>
 
+
           <select
             id="sortSelect"
             class="sort-select"
           >
+
             <option value="score-desc">
               最新評価が高い順
             </option>
@@ -78,7 +137,9 @@
             <option value="name">
               ホテル名順
             </option>
+
           </select>
+
 
           <span
             id="hotelCount"
@@ -91,19 +152,31 @@
 
       </div>
 
+
+      <!-- ==============================
+           ホテル一覧
+      ============================== -->
+
       <div
         id="hotelList"
         class="hotel-list"
         aria-live="polite"
       >
+
         <p class="empty-message">
           ホテル情報を読み込んでいます
         </p>
+
       </div>
 
     </section>
 
   </main>
+
+
+  <!-- ==============================
+       下部ナビ
+  ============================== -->
 
   <nav class="bottom-nav">
 
@@ -111,6 +184,7 @@
       href="index.html"
       class="nav-item"
     >
+
       <span class="nav-icon">
         ⌂
       </span>
@@ -118,12 +192,15 @@
       <span class="nav-label">
         ホーム
       </span>
+
     </a>
+
 
     <a
       href="list.html"
       class="nav-item active"
     >
+
       <span class="nav-icon">
         ≡
       </span>
@@ -131,12 +208,15 @@
       <span class="nav-label">
         一覧
       </span>
+
     </a>
+
 
     <a
       href="add.html"
       class="nav-item"
     >
+
       <span class="nav-icon">
         ＋
       </span>
@@ -144,11 +224,19 @@
       <span class="nav-label">
         評価追加
       </span>
+
     </a>
 
   </nav>
 
+
+  <!-- ==============================
+       アプリ
+  ============================== -->
+
   <script src="js/prefecture.js"></script>
+  <script src="js/pwa.js"></script>
 
 </body>
+
 </html>

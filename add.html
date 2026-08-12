@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
   <meta charset="UTF-8">
 
@@ -10,24 +11,48 @@
 
   <title>評価追加 | Hotel Score Map</title>
 
+  <link rel="manifest" href="manifest.json">
+
+  <meta name="theme-color" content="#ffffff">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta
+    name="apple-mobile-web-app-status-bar-style"
+    content="default"
+  >
+  <meta
+    name="apple-mobile-web-app-title"
+    content="Hotel Score Map"
+  >
+
+  <!-- Leaflet -->
   <link
     rel="stylesheet"
     href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
     crossorigin=""
   >
 
+  <!-- CSS -->
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/add.css">
 </head>
 
+
 <body>
+
+  <!-- ================================
+       ヘッダー
+  ================================= -->
 
   <header class="app-header">
     <h1 class="app-title">
       評価追加
     </h1>
   </header>
+
+
+  <!-- ================================
+       メイン
+  ================================= -->
 
   <main class="main-content">
 
@@ -37,10 +62,18 @@
       novalidate
     >
 
-      <!-- 基本情報 -->
+
+      <!-- ================================
+           基本情報
+      ================================= -->
+
       <section class="basic-section">
 
+
+        <!-- ホテル名 -->
+
         <div class="form-row">
+
           <label for="hotelName">
             ホテル・旅館名
           </label>
@@ -53,9 +86,79 @@
             autocomplete="off"
             required
           >
+
         </div>
 
+
+        <!-- 国・地域 -->
+
         <div class="form-row">
+
+          <label for="countrySelect">
+            国・地域
+          </label>
+
+          <select
+            id="countrySelect"
+            name="countrySelect"
+          >
+
+            <option value="JP" selected>
+              日本
+            </option>
+
+            <option value="AU">
+              オーストラリア
+            </option>
+
+            <option value="US">
+              アメリカ
+            </option>
+
+            <option value="KR">
+              韓国
+            </option>
+
+            <option value="TW">
+              台湾
+            </option>
+
+            <option value="HK">
+              香港
+            </option>
+
+            <option value="SG">
+              シンガポール
+            </option>
+
+            <option value="TH">
+              タイ
+            </option>
+
+            <option value="GB">
+              イギリス
+            </option>
+
+            <option value="FR">
+              フランス
+            </option>
+
+            <option value="OTHER">
+              その他
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <!-- 日本の場合：都道府県 -->
+
+        <div
+          id="prefectureRow"
+          class="form-row"
+        >
+
           <label for="prefecture">
             都道府県
           </label>
@@ -63,15 +166,67 @@
           <select
             id="prefecture"
             name="prefecture"
-            required
           >
+
             <option value="">
               都道府県を選択
             </option>
+
           </select>
+
         </div>
 
+
+        <!-- 海外の場合：州・地域 -->
+
+        <div
+          id="foreignRegionRow"
+          class="form-row"
+          hidden
+        >
+
+          <label for="foreignRegion">
+            州・地域
+          </label>
+
+          <input
+            type="text"
+            id="foreignRegion"
+            name="foreignRegion"
+            placeholder="例：クイーンズランド州"
+            autocomplete="off"
+          >
+
+        </div>
+
+
+        <!-- その他の場合：国・地域名 -->
+
+        <div
+          id="customCountryRow"
+          class="form-row"
+          hidden
+        >
+
+          <label for="customCountry">
+            国・地域名
+          </label>
+
+          <input
+            type="text"
+            id="customCountry"
+            name="customCountry"
+            placeholder="国・地域名を入力"
+            autocomplete="off"
+          >
+
+        </div>
+
+
+        <!-- 所在地 -->
+
         <div class="form-row">
+
           <label for="address">
             所在地
           </label>
@@ -83,30 +238,58 @@
             placeholder="例：山形県天童市鎌田2丁目2-18"
             autocomplete="off"
           >
+
         </div>
 
+
+        <!-- 現在地・地図 -->
+
         <div class="form-row">
+
           <label>
             地図上の位置
           </label>
 
           <button
             type="button"
+            id="currentLocationButton"
+            class="location-button"
+          >
+            ◎ 現在地を取得
+          </button>
+
+          <p
+            id="currentLocationStatus"
+            class="location-status location-unset"
+            aria-live="polite"
+          >
+            現在地未取得
+          </p>
+
+
+          <button
+            type="button"
             id="openLocationDialogButton"
             class="location-button"
           >
-            地図で位置を設定
+            地図で位置を修正
           </button>
 
           <p
             id="locationStatus"
             class="location-status location-unset"
+            aria-live="polite"
           >
             位置未設定
           </p>
+
         </div>
 
+
+        <!-- 宿泊日 -->
+
         <div class="form-row">
+
           <label for="stayDate">
             宿泊日
           </label>
@@ -117,14 +300,20 @@
             name="stayDate"
             required
           >
+
         </div>
 
       </section>
 
-      <!-- 総合評価 -->
+
+      <!-- ================================
+           総合評価
+      ================================= -->
+
       <section class="score-summary">
 
         <div>
+
           <p class="summary-label">
             総合評価
           </p>
@@ -135,7 +324,9 @@
           >
             ---
           </p>
+
         </div>
+
 
         <div
           id="rankBadge"
@@ -146,14 +337,20 @@
 
       </section>
 
-      <!-- 評価項目 -->
+
+      <!-- ================================
+           評価項目
+      ================================= -->
+
       <section class="category-list">
+
 
         <button
           type="button"
           class="category-button"
           data-category="room"
         >
+
           <span class="category-name">
             客室・アメニティ
           </span>
@@ -165,13 +362,16 @@
           <span class="category-arrow">
             ›
           </span>
+
         </button>
+
 
         <button
           type="button"
           class="category-button"
           data-category="size"
         >
+
           <span class="category-name">
             広さ
           </span>
@@ -183,13 +383,16 @@
           <span class="category-arrow">
             ›
           </span>
+
         </button>
+
 
         <button
           type="button"
           class="category-button"
           data-category="service"
         >
+
           <span class="category-name">
             接客・サービス
           </span>
@@ -201,13 +404,16 @@
           <span class="category-arrow">
             ›
           </span>
+
         </button>
+
 
         <button
           type="button"
           class="category-button"
           data-category="bath"
         >
+
           <span class="category-name">
             バス・お風呂
           </span>
@@ -219,13 +425,16 @@
           <span class="category-arrow">
             ›
           </span>
+
         </button>
+
 
         <button
           type="button"
           class="category-button"
           data-category="facility"
         >
+
           <span class="category-name">
             施設・設備
           </span>
@@ -237,13 +446,16 @@
           <span class="category-arrow">
             ›
           </span>
+
         </button>
+
 
         <button
           type="button"
           class="category-button"
           data-category="meal"
         >
+
           <span class="category-name">
             お食事
           </span>
@@ -255,13 +467,16 @@
           <span class="category-arrow">
             ›
           </span>
+
         </button>
+
 
         <button
           type="button"
           class="category-button"
           data-category="satisfaction"
         >
+
           <span class="category-name">
             満足度
           </span>
@@ -273,11 +488,16 @@
           <span class="category-arrow">
             ›
           </span>
+
         </button>
 
       </section>
 
-      <!-- リピートポイント -->
+
+      <!-- ================================
+           リピートポイント
+      ================================= -->
+
       <section class="repeat-section">
 
         <h2>
@@ -291,9 +511,11 @@
           評価を入力すると、付与可能か自動判定します。
         </p>
 
+
         <div class="repeat-options">
 
           <label class="repeat-option">
+
             <input
               type="radio"
               name="repeatType"
@@ -304,9 +526,12 @@
             <span>
               なし
             </span>
+
           </label>
 
+
           <label class="repeat-option">
+
             <input
               type="radio"
               name="repeatType"
@@ -317,11 +542,16 @@
 
             <span>
               リピあり
-              <small>＋0.050</small>
+              <small>
+                ＋0.050
+              </small>
             </span>
+
           </label>
 
+
           <label class="repeat-option">
+
             <input
               type="radio"
               name="repeatType"
@@ -332,15 +562,22 @@
 
             <span>
               激リピあり
-              <small>＋0.100</small>
+              <small>
+                ＋0.100
+              </small>
             </span>
+
           </label>
 
         </div>
 
       </section>
 
-      <!-- 保存 -->
+
+      <!-- ================================
+           保存
+      ================================= -->
+
       <div class="save-area">
 
         <p
@@ -359,42 +596,65 @@
 
       </div>
 
+
     </form>
 
   </main>
 
-  <!-- 下部ナビ -->
+
+  <!-- ================================
+       下部ナビ
+  ================================= -->
+
   <nav class="bottom-nav">
 
     <a
       href="index.html"
       class="nav-item"
     >
-      <span class="nav-icon">⌂</span>
-      <span class="nav-label">ホーム</span>
+      <span class="nav-icon">
+        ⌂
+      </span>
+
+      <span class="nav-label">
+        ホーム
+      </span>
     </a>
+
 
     <a
       href="list.html"
       class="nav-item"
     >
-      <span class="nav-icon">≡</span>
-      <span class="nav-label">一覧</span>
+      <span class="nav-icon">
+        ≡
+      </span>
+
+      <span class="nav-label">
+        一覧
+      </span>
     </a>
+
 
     <a
       href="add.html"
       class="nav-item active"
     >
-      <span class="nav-icon">＋</span>
-      <span class="nav-label">評価追加</span>
+      <span class="nav-icon">
+        ＋
+      </span>
+
+      <span class="nav-label">
+        評価追加
+      </span>
     </a>
 
   </nav>
 
-  <!-- ==================================
-       通常の数字評価
-  ================================== -->
+
+  <!-- ================================
+       通常評価ダイアログ
+  ================================= -->
 
   <dialog
     id="scoreDialog"
@@ -420,6 +680,7 @@
 
       </div>
 
+
       <div class="score-input-area">
 
         <label for="categoryScore">
@@ -441,6 +702,7 @@
         </p>
 
       </div>
+
 
       <div class="dialog-actions">
 
@@ -466,9 +728,10 @@
 
   </dialog>
 
-  <!-- ==================================
-       広さ
-  ================================== -->
+
+  <!-- ================================
+       広さダイアログ
+  ================================= -->
 
   <dialog
     id="sizeDialog"
@@ -494,7 +757,7 @@
 
       </div>
 
-      <!-- 客室タイプ -->
+
       <section class="detail-score-section">
 
         <div class="detail-score-heading">
@@ -503,9 +766,11 @@
           </h3>
         </div>
 
+
         <div class="room-type-options">
 
           <label class="select-card">
+
             <input
               type="radio"
               name="roomType"
@@ -516,9 +781,12 @@
             <span>
               洋室
             </span>
+
           </label>
 
+
           <label class="select-card">
+
             <input
               type="radio"
               name="roomType"
@@ -528,9 +796,12 @@
             <span>
               和室
             </span>
+
           </label>
 
+
           <label class="select-card">
+
             <input
               type="radio"
               name="roomType"
@@ -540,18 +811,20 @@
             <span>
               和洋室
             </span>
+
           </label>
 
         </div>
 
       </section>
 
-      <!-- 広さ選択 -->
+
       <section class="detail-score-section">
 
         <div class="detail-score-heading">
 
           <div>
+
             <h3>
               広さを選択
             </h3>
@@ -562,7 +835,9 @@
             >
               洋室の広さを選択
             </p>
+
           </div>
+
 
           <strong id="sizeScoreDisplay">
             3.000
@@ -570,7 +845,9 @@
 
         </div>
 
-        <!-- 洋室・和洋室 -->
+
+        <!-- 洋室 -->
+
         <div
           id="westernSizeOptions"
           class="room-size-options"
@@ -582,12 +859,12 @@
               name="westernSize"
               value="2"
             >
-
             <span>
               20㎡未満
               <small>2.000点</small>
             </span>
           </label>
+
 
           <label class="select-card">
             <input
@@ -595,12 +872,12 @@
               name="westernSize"
               value="2.5"
             >
-
             <span>
               20～40㎡
               <small>2.500点</small>
             </span>
           </label>
+
 
           <label class="select-card">
             <input
@@ -609,12 +886,12 @@
               value="3"
               checked
             >
-
             <span>
               40～60㎡
               <small>3.000点</small>
             </span>
           </label>
+
 
           <label class="select-card">
             <input
@@ -622,12 +899,12 @@
               name="westernSize"
               value="3.5"
             >
-
             <span>
               60～80㎡
               <small>3.500点</small>
             </span>
           </label>
+
 
           <label class="select-card">
             <input
@@ -635,12 +912,12 @@
               name="westernSize"
               value="4"
             >
-
             <span>
               80～100㎡
               <small>4.000点</small>
             </span>
           </label>
+
 
           <label class="select-card">
             <input
@@ -648,7 +925,6 @@
               name="westernSize"
               value="5"
             >
-
             <span>
               100㎡以上
               <small>5.000点</small>
@@ -657,7 +933,9 @@
 
         </div>
 
+
         <!-- 和室 -->
+
         <div
           id="japaneseSizeOptions"
           class="room-size-options"
@@ -670,12 +948,12 @@
               name="japaneseSize"
               value="2"
             >
-
             <span>
               11畳未満
               <small>2.000点</small>
             </span>
           </label>
+
 
           <label class="select-card">
             <input
@@ -683,12 +961,12 @@
               name="japaneseSize"
               value="2.5"
             >
-
             <span>
               11～22畳
               <small>2.500点</small>
             </span>
           </label>
+
 
           <label class="select-card">
             <input
@@ -697,12 +975,12 @@
               value="3"
               checked
             >
-
             <span>
               22～33畳
               <small>3.000点</small>
             </span>
           </label>
+
 
           <label class="select-card">
             <input
@@ -710,12 +988,12 @@
               name="japaneseSize"
               value="3.5"
             >
-
             <span>
               33～44畳
               <small>3.500点</small>
             </span>
           </label>
+
 
           <label class="select-card">
             <input
@@ -723,12 +1001,12 @@
               name="japaneseSize"
               value="4"
             >
-
             <span>
               44～55畳
               <small>4.000点</small>
             </span>
           </label>
+
 
           <label class="select-card">
             <input
@@ -736,7 +1014,6 @@
               name="japaneseSize"
               value="5"
             >
-
             <span>
               55畳以上
               <small>5.000点</small>
@@ -746,6 +1023,7 @@
         </div>
 
       </section>
+
 
       <section class="detail-total-section">
 
@@ -764,6 +1042,7 @@
         </strong>
 
       </section>
+
 
       <div class="dialog-actions">
 
@@ -797,9 +1076,10 @@
 
   </dialog>
 
-  <!-- ==================================
-       お食事
-  ================================== -->
+
+  <!-- ================================
+       食事ダイアログ
+  ================================= -->
 
   <dialog
     id="mealDialog"
@@ -825,7 +1105,7 @@
 
       </div>
 
-      <!-- 一番上 -->
+
       <label class="meal-none-option">
 
         <input
@@ -839,9 +1119,11 @@
 
       </label>
 
+
       <p class="meal-none-description">
         「食事なし」を選択した場合、お食事は総合評価の計算から除外されます。
       </p>
+
 
       <div
         id="mealScoreInputArea"
@@ -862,11 +1144,8 @@
           placeholder="0.000～5.000"
         >
 
-        <p class="score-help">
-          0.000から5.000まで、小数第3位で入力できます。
-        </p>
-
       </div>
+
 
       <div class="dialog-actions">
 
@@ -900,9 +1179,10 @@
 
   </dialog>
 
-  <!-- ==================================
-       地図位置設定
-  ================================== -->
+
+  <!-- ================================
+       地図ダイアログ
+  ================================= -->
 
   <dialog
     id="locationDialog"
@@ -914,7 +1194,7 @@
       <div class="dialog-header">
 
         <h2>
-          地図で位置を設定
+          地図で位置を修正
         </h2>
 
         <button
@@ -927,6 +1207,7 @@
         </button>
 
       </div>
+
 
       <div class="location-search-area">
 
@@ -947,21 +1228,24 @@
 
       </div>
 
+
       <p
         id="locationSearchMessage"
         class="location-search-message"
         aria-live="polite"
       ></p>
 
+
       <div
         id="locationMap"
         class="location-map"
-        aria-label="ホテル位置設定用地図"
       ></div>
+
 
       <p class="location-help">
         地図をタップするか、ピンをドラッグして位置を調整できます。
       </p>
+
 
       <div class="location-coordinate-display">
 
@@ -980,6 +1264,7 @@
         </span>
 
       </div>
+
 
       <div class="dialog-actions">
 
@@ -1005,13 +1290,20 @@
 
   </dialog>
 
+
+  <!-- Leaflet -->
+
   <script
     src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
     crossorigin=""
   ></script>
 
+
+  <!-- JavaScript -->
+
   <script src="js/add.js"></script>
+  <script src="js/pwa.js"></script>
 
 </body>
+
 </html>

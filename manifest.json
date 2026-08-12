@@ -1,0 +1,12 @@
+{
+  "name": "Hotel Score Map",
+  "short_name": "ホテルスコア",
+  "description": "個人用ホテル評価アプリ",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "orientation": "any",
+  "lang": "ja-JP"
+}

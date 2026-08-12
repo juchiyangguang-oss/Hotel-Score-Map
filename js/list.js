@@ -76,6 +76,18 @@ const searchResultCount =
 const hotelSearchResults =
   document.getElementById("hotelSearchResults");
 
+const allHotelsSection =
+  document.getElementById("allHotelsSection");
+
+const allHotelsCount =
+  document.getElementById("allHotelsCount");
+
+const allHotelsList =
+  document.getElementById("allHotelsList");
+
+const allHotelsSort =
+  document.getElementById("allHotelsSort");
+
 const prefectureSection =
   document.getElementById("prefectureSection");
 
@@ -92,6 +104,10 @@ if (
   !searchResultSection ||
   !searchResultCount ||
   !hotelSearchResults ||
+  !allHotelsSection ||
+  !allHotelsCount ||
+  !allHotelsList ||
+  !allHotelsSort ||
   !prefectureSection ||
   !prefectureHotelCount ||
   !prefList
@@ -121,13 +137,17 @@ const prefectureCounts =
 prefectureHotelCount.textContent =
   `${groupedHotels.length}施設`;
 
+allHotelsCount.textContent =
+  `${groupedHotels.length}施設`;
+
+renderAllHotels();
 renderPrefectures();
 
 searchStatus.textContent =
   "ホテル名・地域・住所から検索できます";
 
 /* ==================================
-   検索
+   イベント
 ================================== */
 
 hotelSearch.addEventListener(
@@ -140,6 +160,15 @@ clearSearchButton.addEventListener(
   clearSearch
 );
 
+allHotelsSort.addEventListener(
+  "change",
+  renderAllHotels
+);
+
+/* ==================================
+   検索
+================================== */
+
 function handleSearch() {
   const keyword =
     normalizeSearchText(
@@ -147,7 +176,7 @@ function handleSearch() {
     );
 
   if (keyword === "") {
-    showPrefectureList();
+    showNormalList();
     return;
   }
 
@@ -171,12 +200,15 @@ function clearSearch() {
 
   hotelSearch.focus();
 
-  showPrefectureList();
+  showNormalList();
 }
 
-function showPrefectureList() {
+function showNormalList() {
   searchResultSection.hidden =
     true;
+
+  allHotelsSection.hidden =
+    false;
 
   prefectureSection.hidden =
     false;
@@ -233,6 +265,9 @@ function renderSearchResults(hotels) {
   searchResultSection.hidden =
     false;
 
+  allHotelsSection.hidden =
+    true;
+
   prefectureSection.hidden =
     true;
 
@@ -260,7 +295,7 @@ function renderSearchResults(hotels) {
 
   hotels.forEach((hotel) => {
     const card =
-      createSearchHotelCard(hotel);
+      createHotelCard(hotel);
 
     hotelSearchResults.appendChild(
       card
@@ -268,7 +303,145 @@ function renderSearchResults(hotels) {
   });
 }
 
-function createSearchHotelCard(hotel) {
+/* ==================================
+   全国ホテル一覧
+================================== */
+
+function renderAllHotels() {
+  allHotelsList.innerHTML = "";
+
+  const hotels =
+    [...groupedHotels];
+
+  sortAllHotels(
+    hotels,
+    allHotelsSort.value
+  );
+
+  allHotelsCount.textContent =
+    `${hotels.length}施設`;
+
+  if (hotels.length === 0) {
+    allHotelsList.innerHTML = `
+      <p class="empty-message">
+        まだホテルが登録されていません
+      </p>
+    `;
+
+    return;
+  }
+
+  hotels.forEach((hotel) => {
+    const card =
+      createHotelCard(hotel);
+
+    allHotelsList.appendChild(
+      card
+    );
+  });
+}
+
+/* ==================================
+   全国一覧 並び替え
+================================== */
+
+function sortAllHotels(
+  hotels,
+  type
+) {
+  switch (type) {
+
+    case "score-asc":
+
+      hotels.sort(
+        (a, b) =>
+          a.latestScore -
+          b.latestScore
+      );
+
+      break;
+
+
+    case "date-desc":
+
+      hotels.sort(
+        (a, b) =>
+          getDateTimestamp(
+            b.latestRecord
+          ) -
+          getDateTimestamp(
+            a.latestRecord
+          )
+      );
+
+      break;
+
+
+    case "date-asc":
+
+      hotels.sort(
+        (a, b) =>
+          getDateTimestamp(
+            a.latestRecord
+          ) -
+          getDateTimestamp(
+            b.latestRecord
+          )
+      );
+
+      break;
+
+
+    case "count-desc":
+
+      hotels.sort(
+        (a, b) =>
+          b.stayCount -
+          a.stayCount ||
+          b.latestScore -
+          a.latestScore
+      );
+
+      break;
+
+
+    case "name":
+
+      hotels.sort(
+        (a, b) =>
+          a.name.localeCompare(
+            b.name,
+            "ja"
+          )
+      );
+
+      break;
+
+
+    case "score-desc":
+    default:
+
+      hotels.sort(
+        (a, b) =>
+          b.latestScore -
+          a.latestScore ||
+          getDateTimestamp(
+            b.latestRecord
+          ) -
+          getDateTimestamp(
+            a.latestRecord
+          )
+      );
+
+      break;
+  }
+}
+
+/* ==================================
+   ホテルカード
+================================== */
+
+function createHotelCard(hotel) {
   const card =
     document.createElement("a");
 

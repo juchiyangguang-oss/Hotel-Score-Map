@@ -98,6 +98,7 @@
 ================================== */
 
 .search-result-section,
+.all-hotels-section,
 .prefecture-section {
   margin-bottom: 18px;
 }
@@ -124,7 +125,50 @@
 }
 
 /* ==================================
-   検索結果
+   すべてのホテル
+   並び替え
+================================== */
+
+.all-hotels-heading {
+  align-items: flex-end;
+}
+
+.all-hotels-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sort-label {
+  color: #666666;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.sort-select {
+  min-height: 38px;
+
+  padding: 0 34px 0 10px;
+
+  border: 1px solid #cccccc;
+  border-radius: 9px;
+
+  background: #ffffff;
+  color: #222222;
+
+  font: inherit;
+  font-size: 14px;
+
+  cursor: pointer;
+}
+
+.sort-select:focus {
+  border-color: #2196f3;
+  outline: 2px solid rgba(33, 150, 243, 0.16);
+}
+
+/* ==================================
+   ホテル一覧・検索結果
 ================================== */
 
 .hotel-search-results {
@@ -350,5 +394,20 @@
 
   .search-hotel-score-area {
     justify-content: space-between;
+  }
+
+  .section-heading-row.all-hotels-heading {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .all-hotels-controls {
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+
+  .sort-select {
+    flex: 1;
+    min-width: 180px;
   }
 }

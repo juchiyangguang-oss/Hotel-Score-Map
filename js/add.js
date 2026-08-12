@@ -1,6 +1,24 @@
 "use strict";
 
 /* ==================================
+   国・地域データ
+================================== */
+
+const countries = {
+  JP: "日本",
+  AU: "オーストラリア",
+  US: "アメリカ",
+  KR: "韓国",
+  TW: "台湾",
+  HK: "香港",
+  SG: "シンガポール",
+  TH: "タイ",
+  GB: "イギリス",
+  FR: "フランス"
+};
+
+
+/* ==================================
    都道府県データ
 ================================== */
 
@@ -54,6 +72,7 @@ const prefectures = [
   { code: "47", name: "沖縄県", slug: "okinawa" }
 ];
 
+
 const prefectureCenters = {
   hokkaido: [43.3, 142.7],
   aomori: [40.8, 140.7],
@@ -106,7 +125,7 @@ const prefectureCenters = {
 
 
 /* ==================================
-   評価項目
+   評価データ
 ================================== */
 
 const categoryNames = {
@@ -128,11 +147,6 @@ const scores = {
   meal: null,
   satisfaction: null
 };
-
-
-/* ==================================
-   総合点の重み
-================================== */
 
 const scoreWeights = {
   room: 2,
@@ -165,14 +179,8 @@ let sizeDraft = createDefaultSizeDetails();
 ================================== */
 
 let mealExcluded = false;
-
 let mealDraftExcluded = false;
 let mealDraftScore = null;
-
-
-/* ==================================
-   共通状態
-================================== */
 
 let activeCategory = null;
 
@@ -181,16 +189,12 @@ let activeCategory = null;
    編集モード
 ================================== */
 
-const pageParams =
-  new URLSearchParams(
-    window.location.search
-  );
+const pageParams = new URLSearchParams(
+  window.location.search
+);
 
-const editId =
-  pageParams.get("edit");
-
-const isEditMode =
-  Boolean(editId);
+const editId = pageParams.get("edit");
+const isEditMode = Boolean(editId);
 
 let editingHotel = null;
 
@@ -207,358 +211,205 @@ let locationMarker = null;
 
 
 /* ==================================
-   基本要素
+   HTML要素
 ================================== */
 
 const pageTitle =
-  document.querySelector(
-    ".app-title"
-  );
+  document.querySelector(".app-title");
 
 const hotelForm =
-  document.getElementById(
-    "hotelForm"
-  );
+  document.getElementById("hotelForm");
 
 const hotelNameInput =
-  document.getElementById(
-    "hotelName"
-  );
+  document.getElementById("hotelName");
+
+const countrySelect =
+  document.getElementById("countrySelect");
+
+const prefectureRow =
+  document.getElementById("prefectureRow");
 
 const prefectureSelect =
-  document.getElementById(
-    "prefecture"
-  );
+  document.getElementById("prefecture");
+
+const foreignRegionRow =
+  document.getElementById("foreignRegionRow");
+
+const foreignRegionInput =
+  document.getElementById("foreignRegion");
+
+const customCountryRow =
+  document.getElementById("customCountryRow");
+
+const customCountryInput =
+  document.getElementById("customCountry");
 
 const addressInput =
-  document.getElementById(
-    "address"
-  );
+  document.getElementById("address");
 
 const stayDateInput =
-  document.getElementById(
-    "stayDate"
-  );
+  document.getElementById("stayDate");
 
 const saveButton =
-  document.getElementById(
-    "saveButton"
-  );
+  document.getElementById("saveButton");
 
 const totalScoreElement =
-  document.getElementById(
-    "totalScore"
-  );
+  document.getElementById("totalScore");
 
 const rankBadge =
-  document.getElementById(
-    "rankBadge"
-  );
+  document.getElementById("rankBadge");
 
 const categoryButtons =
-  document.querySelectorAll(
-    ".category-button"
-  );
+  document.querySelectorAll(".category-button");
 
 const repeatMessage =
-  document.getElementById(
-    "repeatMessage"
-  );
+  document.getElementById("repeatMessage");
 
 const repeatNormal =
-  document.getElementById(
-    "repeatNormal"
-  );
+  document.getElementById("repeatNormal");
 
 const repeatIntense =
-  document.getElementById(
-    "repeatIntense"
-  );
+  document.getElementById("repeatIntense");
 
 const formMessage =
-  document.getElementById(
-    "formMessage"
-  );
+  document.getElementById("formMessage");
 
 
 /* ==================================
-   数字入力ダイアログ
+   通常評価
 ================================== */
 
 const scoreDialog =
-  document.getElementById(
-    "scoreDialog"
-  );
+  document.getElementById("scoreDialog");
 
 const dialogTitle =
-  document.getElementById(
-    "dialogTitle"
-  );
+  document.getElementById("dialogTitle");
 
 const categoryScoreInput =
-  document.getElementById(
-    "categoryScore"
-  );
+  document.getElementById("categoryScore");
 
 const clearScoreButton =
-  document.getElementById(
-    "clearScoreButton"
-  );
+  document.getElementById("clearScoreButton");
 
 const applyScoreButton =
-  document.getElementById(
-    "applyScoreButton"
-  );
+  document.getElementById("applyScoreButton");
 
 
 /* ==================================
-   広さダイアログ
+   広さ
 ================================== */
 
 const sizeDialog =
-  document.getElementById(
-    "sizeDialog"
-  );
+  document.getElementById("sizeDialog");
 
 const closeSizeDialogButton =
-  document.getElementById(
-    "closeSizeDialogButton"
-  );
+  document.getElementById("closeSizeDialogButton");
 
 const cancelSizeButton =
-  document.getElementById(
-    "cancelSizeButton"
-  );
+  document.getElementById("cancelSizeButton");
 
 const clearSizeButton =
-  document.getElementById(
-    "clearSizeButton"
-  );
+  document.getElementById("clearSizeButton");
 
 const applySizeButton =
-  document.getElementById(
-    "applySizeButton"
-  );
+  document.getElementById("applySizeButton");
 
 const roomTypeInputs =
-  document.querySelectorAll(
-    'input[name="roomType"]'
-  );
+  document.querySelectorAll('input[name="roomType"]');
 
 const westernSizeInputs =
-  document.querySelectorAll(
-    'input[name="westernSize"]'
-  );
+  document.querySelectorAll('input[name="westernSize"]');
 
 const japaneseSizeInputs =
-  document.querySelectorAll(
-    'input[name="japaneseSize"]'
-  );
+  document.querySelectorAll('input[name="japaneseSize"]');
 
 const westernSizeOptions =
-  document.getElementById(
-    "westernSizeOptions"
-  );
+  document.getElementById("westernSizeOptions");
 
 const japaneseSizeOptions =
-  document.getElementById(
-    "japaneseSizeOptions"
-  );
+  document.getElementById("japaneseSizeOptions");
 
 const sizeTypeMessage =
-  document.getElementById(
-    "sizeTypeMessage"
-  );
+  document.getElementById("sizeTypeMessage");
 
 const sizeScoreDisplay =
-  document.getElementById(
-    "sizeScoreDisplay"
-  );
+  document.getElementById("sizeScoreDisplay");
 
 const sizeTotalScore =
-  document.getElementById(
-    "sizeTotalScore"
-  );
+  document.getElementById("sizeTotalScore");
 
 
 /* ==================================
-   お食事ダイアログ
+   食事
 ================================== */
 
 const mealDialog =
-  document.getElementById(
-    "mealDialog"
-  );
+  document.getElementById("mealDialog");
 
 const closeMealDialogButton =
-  document.getElementById(
-    "closeMealDialogButton"
-  );
+  document.getElementById("closeMealDialogButton");
 
 const mealNoneCheckbox =
-  document.getElementById(
-    "mealNoneCheckbox"
-  );
+  document.getElementById("mealNoneCheckbox");
 
 const mealScoreInputArea =
-  document.getElementById(
-    "mealScoreInputArea"
-  );
+  document.getElementById("mealScoreInputArea");
 
 const mealScoreInput =
-  document.getElementById(
-    "mealScoreInput"
-  );
+  document.getElementById("mealScoreInput");
 
 const cancelMealButton =
-  document.getElementById(
-    "cancelMealButton"
-  );
+  document.getElementById("cancelMealButton");
 
 const clearMealButton =
-  document.getElementById(
-    "clearMealButton"
-  );
+  document.getElementById("clearMealButton");
 
 const applyMealButton =
-  document.getElementById(
-    "applyMealButton"
-  );
+  document.getElementById("applyMealButton");
 
 
 /* ==================================
-   位置設定
+   現在地・地図
 ================================== */
+
+const currentLocationButton =
+  document.getElementById("currentLocationButton");
+
+const currentLocationStatus =
+  document.getElementById("currentLocationStatus");
 
 const openLocationDialogButton =
-  document.getElementById(
-    "openLocationDialogButton"
-  );
+  document.getElementById("openLocationDialogButton");
 
 const locationStatus =
-  document.getElementById(
-    "locationStatus"
-  );
+  document.getElementById("locationStatus");
 
 const locationDialog =
-  document.getElementById(
-    "locationDialog"
-  );
+  document.getElementById("locationDialog");
 
 const closeLocationDialogButton =
-  document.getElementById(
-    "closeLocationDialogButton"
-  );
+  document.getElementById("closeLocationDialogButton");
 
 const locationSearchInput =
-  document.getElementById(
-    "locationSearchInput"
-  );
+  document.getElementById("locationSearchInput");
 
 const locationSearchButton =
-  document.getElementById(
-    "locationSearchButton"
-  );
+  document.getElementById("locationSearchButton");
 
 const locationSearchMessage =
-  document.getElementById(
-    "locationSearchMessage"
-  );
+  document.getElementById("locationSearchMessage");
 
 const latitudeDisplay =
-  document.getElementById(
-    "latitudeDisplay"
-  );
+  document.getElementById("latitudeDisplay");
 
 const longitudeDisplay =
-  document.getElementById(
-    "longitudeDisplay"
-  );
+  document.getElementById("longitudeDisplay");
 
 const clearLocationButton =
-  document.getElementById(
-    "clearLocationButton"
-  );
+  document.getElementById("clearLocationButton");
 
 const applyLocationButton =
-  document.getElementById(
-    "applyLocationButton"
-  );
-
-
-/* ==================================
-   必須要素確認
-================================== */
-
-const requiredElements = [
-  pageTitle,
-  hotelForm,
-  hotelNameInput,
-  prefectureSelect,
-  addressInput,
-  stayDateInput,
-  saveButton,
-  totalScoreElement,
-  rankBadge,
-  repeatMessage,
-  repeatNormal,
-  repeatIntense,
-  formMessage,
-
-  scoreDialog,
-  dialogTitle,
-  categoryScoreInput,
-  clearScoreButton,
-  applyScoreButton,
-
-  sizeDialog,
-  closeSizeDialogButton,
-  cancelSizeButton,
-  clearSizeButton,
-  applySizeButton,
-  westernSizeOptions,
-  japaneseSizeOptions,
-  sizeTypeMessage,
-  sizeScoreDisplay,
-  sizeTotalScore,
-
-  mealDialog,
-  closeMealDialogButton,
-  mealNoneCheckbox,
-  mealScoreInputArea,
-  mealScoreInput,
-  cancelMealButton,
-  clearMealButton,
-  applyMealButton,
-
-  openLocationDialogButton,
-  locationStatus,
-  locationDialog,
-  closeLocationDialogButton,
-  locationSearchInput,
-  locationSearchButton,
-  locationSearchMessage,
-  latitudeDisplay,
-  longitudeDisplay,
-  clearLocationButton,
-  applyLocationButton
-];
-
-if (
-  requiredElements.some(
-    (element) => !element
-  )
-) {
-  throw new Error(
-    "評価画面に必要なHTML要素が見つかりません。"
-  );
-}
-
-if (typeof L === "undefined") {
-  throw new Error(
-    "Leafletを読み込めませんでした。"
-  );
-}
+  document.getElementById("applyLocationButton");
 
 
 /* ==================================
@@ -570,11 +421,13 @@ initializePage();
 function initializePage() {
   createPrefectureOptions();
 
+  setupCountrySelect();
   setupCategoryButtons();
   setupGenericScoreDialog();
   setupSizeDialog();
   setupMealDialog();
   setupRepeatControls();
+  setupCurrentLocationControls();
   setupLocationControls();
 
   if (isEditMode) {
@@ -589,44 +442,41 @@ function initializePage() {
 
 
 /* ==================================
-   新規モード
+   新規登録
 ================================== */
 
 function initializeNewMode() {
-  pageTitle.textContent =
-    "評価追加";
+  pageTitle.textContent = "評価追加";
 
   document.title =
     "評価追加 | Hotel Score Map";
 
-  saveButton.textContent =
-    "評価を保存";
+  saveButton.textContent = "評価を保存";
 
+  countrySelect.value = "JP";
+
+  updateCountryFields();
   setDefaultDate();
 
   updateLocationStatus();
   updateCoordinateDisplay();
+  updateCurrentLocationStatus();
 }
 
 
 /* ==================================
-   編集モード
+   編集
 ================================== */
 
 function initializeEditMode() {
-  const storedHotels =
-    getStoredHotels();
+  const storedHotels = getStoredHotels();
 
-  editingHotel =
-    storedHotels.find(
-      (hotel) =>
-        hotel.id === editId
-    );
+  editingHotel = storedHotels.find(
+    (hotel) => hotel.id === editId
+  );
 
   if (!editingHotel) {
-    pageTitle.textContent =
-      "評価編集";
-
+    pageTitle.textContent = "評価編集";
     saveButton.disabled = true;
 
     showFormError(
@@ -636,33 +486,53 @@ function initializeEditMode() {
     return;
   }
 
-  pageTitle.textContent =
-    "評価編集";
+  pageTitle.textContent = "評価編集";
 
   document.title =
-    `${
-      editingHotel.name || "評価"
-    }を編集 | Hotel Score Map`;
+    "評価編集 | Hotel Score Map";
 
-  saveButton.textContent =
-    "評価を更新";
+  saveButton.textContent = "評価を更新";
 
-  fillEditingHotelData(
-    editingHotel
-  );
+  fillEditingHotelData(editingHotel);
 }
 
 
-/* ==================================
-   編集データ読み込み
-================================== */
-
 function fillEditingHotelData(hotel) {
-  hotelNameInput.value =
-    hotel.name ?? "";
+  hotelNameInput.value = hotel.name ?? "";
 
-  prefectureSelect.value =
-    hotel.prefecture ?? "";
+  let countryCode = hotel.countryCode;
+
+  /*
+    以前の日本国内データとの互換性
+  */
+  if (!countryCode) {
+    countryCode =
+      hotel.prefecture ? "JP" : "OTHER";
+  }
+
+  if (
+    countryCode === "OTHER" ||
+    countries[countryCode]
+  ) {
+    countrySelect.value = countryCode;
+  } else {
+    countrySelect.value = "OTHER";
+  }
+
+  updateCountryFields();
+
+  if (isJapan()) {
+    prefectureSelect.value =
+      hotel.prefecture ?? "";
+  } else {
+    foreignRegionInput.value =
+      hotel.region ?? "";
+  }
+
+  if (isCustomCountry()) {
+    customCountryInput.value =
+      hotel.countryName ?? "";
+  }
 
   addressInput.value =
     hotel.address ?? "";
@@ -685,24 +555,17 @@ function fillEditingHotelData(hotel) {
     }
   );
 
-  /* ---------- 広さ ---------- */
-
   if (
     scores.size === null &&
-    isValidScore(
-      hotel.sizeScore
-    )
+    isValidScore(hotel.sizeScore)
   ) {
     scores.size =
-      roundToThree(
-        hotel.sizeScore
-      );
+      roundToThree(hotel.sizeScore);
   }
 
   if (
     hotel.sizeDetails &&
-    typeof hotel.sizeDetails ===
-      "object"
+    typeof hotel.sizeDetails === "object"
   ) {
     sizeDetails =
       normalizeSizeDetails(
@@ -716,17 +579,11 @@ function fillEditingHotelData(hotel) {
   ) {
     sizeDetails = {
       roomType:
-        hotel.roomType ??
-        "western",
-
+        hotel.roomType ?? "western",
       score:
         scores.size
     };
-  } else {
-    sizeDetails = null;
   }
-
-  /* ---------- 食事 ---------- */
 
   mealExcluded =
     hotel.mealExcluded === true;
@@ -735,14 +592,9 @@ function fillEditingHotelData(hotel) {
     scores.meal = null;
   }
 
-  /* ---------- リピート ---------- */
-
   setRepeatSelection(
-    hotel.repeatType ??
-    "none"
+    hotel.repeatType ?? "none"
   );
-
-  /* ---------- 地図 ---------- */
 
   const latitude =
     Number(hotel.latitude);
@@ -755,20 +607,106 @@ function fillEditingHotelData(hotel) {
     isValidLongitude(longitude)
   ) {
     selectedLatitude =
-      roundCoordinate(
-        latitude
-      );
+      roundCoordinate(latitude);
 
     selectedLongitude =
-      roundCoordinate(
-        longitude
-      );
-  } else {
-    clearLocationValues();
+      roundCoordinate(longitude);
   }
 
   updateLocationStatus();
   updateCoordinateDisplay();
+  updateCurrentLocationStatus();
+}
+
+
+/* ==================================
+   国・地域
+================================== */
+
+function setupCountrySelect() {
+  countrySelect.addEventListener(
+    "change",
+    updateCountryFields
+  );
+}
+
+
+function isJapan() {
+  return countrySelect.value === "JP";
+}
+
+
+function isCustomCountry() {
+  return countrySelect.value === "OTHER";
+}
+
+
+function updateCountryFields() {
+  const japan = isJapan();
+  const custom = isCustomCountry();
+
+  /*
+    日本なら都道府県
+  */
+  prefectureRow.hidden = !japan;
+
+  /*
+    海外なら州・地域
+  */
+  foreignRegionRow.hidden = japan;
+
+  /*
+    その他の場合だけ国名を自由入力
+  */
+  customCountryRow.hidden = !custom;
+
+  prefectureSelect.required = japan;
+  customCountryInput.required = custom;
+
+  if (japan) {
+    foreignRegionInput.required = false;
+  } else {
+    foreignRegionInput.required = false;
+  }
+
+  /*
+    まだ位置を決めていない場合のみ
+    地図の表示位置も変更
+  */
+  if (
+    locationMap &&
+    selectedLatitude === null
+  ) {
+    if (japan) {
+      const center =
+        prefectureCenters[
+          prefectureSelect.value
+        ];
+
+      locationMap.setView(
+        center ?? [37.2, 137.2],
+        center ? 9 : 5
+      );
+    } else {
+      locationMap.setView(
+        [20, 0],
+        2
+      );
+    }
+  }
+}
+
+
+function getSelectedCountryName() {
+  if (isCustomCountry()) {
+    return customCountryInput
+      .value
+      .trim();
+  }
+
+  return countries[
+    countrySelect.value
+  ] ?? "";
 }
 
 
@@ -790,15 +728,13 @@ function createPrefectureOptions() {
       option.textContent =
         prefecture.name;
 
-      option.dataset.code =
-        prefecture.code;
-
       prefectureSelect.appendChild(
         option
       );
     }
   );
 }
+
 
 prefectureSelect.addEventListener(
   "change",
@@ -827,8 +763,7 @@ prefectureSelect.addEventListener(
 ================================== */
 
 function setDefaultDate() {
-  const today =
-    new Date();
+  const today = new Date();
 
   const year =
     today.getFullYear();
@@ -836,18 +771,12 @@ function setDefaultDate() {
   const month =
     String(
       today.getMonth() + 1
-    ).padStart(
-      2,
-      "0"
-    );
+    ).padStart(2, "0");
 
   const day =
     String(
       today.getDate()
-    ).padStart(
-      2,
-      "0"
-    );
+    ).padStart(2, "0");
 
   stayDateInput.value =
     `${year}-${month}-${day}`;
@@ -855,7 +784,7 @@ function setDefaultDate() {
 
 
 /* ==================================
-   評価項目ボタン
+   評価ボタン
 ================================== */
 
 function setupCategoryButtons() {
@@ -867,23 +796,12 @@ function setupCategoryButtons() {
           const category =
             button.dataset.category;
 
-          if (
-            !category ||
-            !(category in scores)
-          ) {
-            return;
-          }
-
-          if (
-            category === "size"
-          ) {
+          if (category === "size") {
             openSizeDialog();
             return;
           }
 
-          if (
-            category === "meal"
-          ) {
+          if (category === "meal") {
             openMealDialog();
             return;
           }
@@ -899,7 +817,7 @@ function setupCategoryButtons() {
 
 
 /* ==================================
-   評価一覧表示
+   評価表示
 ================================== */
 
 function updateAllCategoryDisplays() {
@@ -908,9 +826,8 @@ function updateAllCategoryDisplays() {
   );
 }
 
-function updateCategoryDisplay(
-  category
-) {
+
+function updateCategoryDisplay(category) {
   const button =
     document.querySelector(
       `[data-category="${category}"]`
@@ -946,7 +863,7 @@ function updateCategoryDisplay(
 
 
 /* ==================================
-   通常の数字入力
+   通常評価ダイアログ
 ================================== */
 
 function setupGenericScoreDialog() {
@@ -959,79 +876,32 @@ function setupGenericScoreDialog() {
     "click",
     clearGenericScore
   );
-
-  categoryScoreInput.addEventListener(
-    "keydown",
-    (event) => {
-      if (
-        event.key !== "Enter"
-      ) {
-        return;
-      }
-
-      event.preventDefault();
-
-      applyGenericScore();
-    }
-  );
-
-  scoreDialog.addEventListener(
-    "close",
-    () => {
-      activeCategory = null;
-    }
-  );
 }
 
-function openGenericScoreDialog(
-  category
-) {
-  activeCategory =
-    category;
+
+function openGenericScoreDialog(category) {
+  activeCategory = category;
 
   dialogTitle.textContent =
-    categoryNames[
-      category
-    ];
-
-  const currentScore =
-    scores[category];
+    categoryNames[category];
 
   categoryScoreInput.value =
-    currentScore === null
+    scores[category] === null
       ? ""
-      : currentScore.toFixed(3);
+      : scores[category].toFixed(3);
 
   scoreDialog.showModal();
-
-  window.setTimeout(
-    () => {
-      categoryScoreInput.focus();
-      categoryScoreInput.select();
-    },
-    50
-  );
 }
 
+
 function applyGenericScore() {
-  if (!activeCategory) {
-    return;
-  }
-
-  const valueText =
-    categoryScoreInput.value.trim();
-
   const value =
-    Number(valueText);
+    Number(categoryScoreInput.value);
 
-  if (
-    valueText === "" ||
-    !isValidScore(value)
-  ) {
+  if (!isValidScore(value)) {
     showFormError(
       "評価は0.000から5.000の間で入力してください。"
     );
-
     return;
   }
 
@@ -1044,26 +914,18 @@ function applyGenericScore() {
 
   updateEvaluation();
 
-  clearFormMessage();
-
   scoreDialog.close();
 }
 
-function clearGenericScore() {
-  if (!activeCategory) {
-    return;
-  }
 
-  scores[activeCategory] =
-    null;
+function clearGenericScore() {
+  scores[activeCategory] = null;
 
   updateCategoryDisplay(
     activeCategory
   );
 
   updateEvaluation();
-
-  clearFormMessage();
 
   scoreDialog.close();
 }
@@ -1073,64 +935,26 @@ function clearGenericScore() {
    広さ
 ================================== */
 
-function normalizeSizeDetails(
-  source
-) {
-  const result =
-    createDefaultSizeDetails();
-
-  const allowedTypes = [
-    "western",
-    "japanese",
-    "mixed"
-  ];
-
-  if (
-    allowedTypes.includes(
-      source.roomType
-    )
-  ) {
-    result.roomType =
-      source.roomType;
-  }
-
-  const allowedScores = [
-    2,
-    2.5,
-    3,
-    3.5,
-    4,
-    5
-  ];
-
-  const sourceScore =
-    Number(
-      source.score
-    );
-
-  if (
-    allowedScores.includes(
-      sourceScore
-    )
-  ) {
-    result.score =
-      sourceScore;
-  }
-
-  return result;
-}
-
-function copySizeDetails(
-  source
-) {
+function normalizeSizeDetails(source) {
   return {
     roomType:
-      source.roomType,
+      source.roomType ?? "western",
 
     score:
-      source.score
+      isValidScore(source.score)
+        ? roundToThree(source.score)
+        : 3
   };
 }
+
+
+function copySizeDetails(source) {
+  return {
+    roomType: source.roomType,
+    score: source.score
+  };
+}
+
 
 function setupSizeDialog() {
   roomTypeInputs.forEach(
@@ -1147,45 +971,16 @@ function setupSizeDialog() {
     }
   );
 
-  westernSizeInputs.forEach(
+  [
+    ...westernSizeInputs,
+    ...japaneseSizeInputs
+  ].forEach(
     (input) => {
       input.addEventListener(
         "change",
         () => {
-          if (
-            sizeDraft.roomType ===
-            "japanese"
-          ) {
-            return;
-          }
-
           sizeDraft.score =
-            Number(
-              input.value
-            );
-
-          updateSizeDialogDisplay();
-        }
-      );
-    }
-  );
-
-  japaneseSizeInputs.forEach(
-    (input) => {
-      input.addEventListener(
-        "change",
-        () => {
-          if (
-            sizeDraft.roomType !==
-            "japanese"
-          ) {
-            return;
-          }
-
-          sizeDraft.score =
-            Number(
-              input.value
-            );
+            Number(input.value);
 
           updateSizeDialogDisplay();
         }
@@ -1195,12 +990,12 @@ function setupSizeDialog() {
 
   closeSizeDialogButton.addEventListener(
     "click",
-    cancelSizeChanges
+    () => sizeDialog.close()
   );
 
   cancelSizeButton.addEventListener(
     "click",
-    cancelSizeChanges
+    () => sizeDialog.close()
   );
 
   clearSizeButton.addEventListener(
@@ -1214,12 +1009,11 @@ function setupSizeDialog() {
   );
 }
 
+
 function openSizeDialog() {
   sizeDraft =
     sizeDetails
-      ? copySizeDetails(
-          sizeDetails
-        )
+      ? copySizeDetails(sizeDetails)
       : createDefaultSizeDetails();
 
   updateSizeDialogDisplay();
@@ -1227,42 +1021,33 @@ function openSizeDialog() {
   sizeDialog.showModal();
 }
 
-function cancelSizeChanges() {
-  sizeDialog.close();
-}
 
 function clearSizeScore() {
   sizeDetails = null;
   scores.size = null;
 
-  updateCategoryDisplay(
-    "size"
-  );
-
+  updateCategoryDisplay("size");
   updateEvaluation();
 
   sizeDialog.close();
 }
 
+
 function applySizeScore() {
   sizeDetails =
-    copySizeDetails(
-      sizeDraft
-    );
+    copySizeDetails(sizeDraft);
 
   scores.size =
     roundToThree(
       sizeDetails.score
     );
 
-  updateCategoryDisplay(
-    "size"
-  );
-
+  updateCategoryDisplay("size");
   updateEvaluation();
 
   sizeDialog.close();
 }
+
 
 function updateSizeDialogDisplay() {
   roomTypeInputs.forEach(
@@ -1273,61 +1058,56 @@ function updateSizeDialogDisplay() {
     }
   );
 
-  const isJapanese =
+  /*
+    和室のみなら畳、
+    洋室・和洋室なら㎡
+  */
+  const japanese =
     sizeDraft.roomType ===
     "japanese";
 
   westernSizeOptions.hidden =
-    isJapanese;
+    japanese;
 
   japaneseSizeOptions.hidden =
-    !isJapanese;
+    !japanese;
 
-  if (
-    sizeDraft.roomType ===
-    "japanese"
-  ) {
+  if (sizeDraft.roomType === "japanese") {
     sizeTypeMessage.textContent =
-      "和室の広さを畳数で選択";
+      "和室の広さを選択";
   } else if (
-    sizeDraft.roomType ===
-    "mixed"
+    sizeDraft.roomType === "mixed"
   ) {
     sizeTypeMessage.textContent =
       "和洋室の広さを㎡で選択";
   } else {
     sizeTypeMessage.textContent =
-      "洋室の広さを㎡で選択";
+      "洋室の広さを選択";
   }
 
-  const selector =
-    isJapanese
-      ? `input[name="japaneseSize"][value="${sizeDraft.score}"]`
-      : `input[name="westernSize"][value="${sizeDraft.score}"]`;
+  const targetInputs =
+    japanese
+      ? japaneseSizeInputs
+      : westernSizeInputs;
 
-  const selectedInput =
-    document.querySelector(
-      selector
-    );
-
-  if (selectedInput) {
-    selectedInput.checked = true;
-  }
+  targetInputs.forEach(
+    (input) => {
+      input.checked =
+        Number(input.value) ===
+        Number(sizeDraft.score);
+    }
+  );
 
   sizeScoreDisplay.textContent =
-    Number(
-      sizeDraft.score
-    ).toFixed(3);
+    Number(sizeDraft.score).toFixed(3);
 
   sizeTotalScore.textContent =
-    Number(
-      sizeDraft.score
-    ).toFixed(3);
+    Number(sizeDraft.score).toFixed(3);
 }
 
 
 /* ==================================
-   お食事
+   食事
 ================================== */
 
 function setupMealDialog() {
@@ -1343,12 +1123,12 @@ function setupMealDialog() {
 
   closeMealDialogButton.addEventListener(
     "click",
-    cancelMealChanges
+    () => mealDialog.close()
   );
 
   cancelMealButton.addEventListener(
     "click",
-    cancelMealChanges
+    () => mealDialog.close()
   );
 
   clearMealButton.addEventListener(
@@ -1360,22 +1140,8 @@ function setupMealDialog() {
     "click",
     applyMealScore
   );
-
-  mealScoreInput.addEventListener(
-    "keydown",
-    (event) => {
-      if (
-        event.key !== "Enter"
-      ) {
-        return;
-      }
-
-      event.preventDefault();
-
-      applyMealScore();
-    }
-  );
 }
+
 
 function openMealDialog() {
   mealDraftExcluded =
@@ -1397,114 +1163,76 @@ function openMealDialog() {
   mealDialog.showModal();
 }
 
-function cancelMealChanges() {
-  mealDialog.close();
-}
 
 function clearMealScore() {
   mealExcluded = false;
   scores.meal = null;
 
-  updateCategoryDisplay(
-    "meal"
-  );
-
+  updateCategoryDisplay("meal");
   updateEvaluation();
 
   mealDialog.close();
 }
+
 
 function applyMealScore() {
   if (mealDraftExcluded) {
     mealExcluded = true;
     scores.meal = null;
 
-    updateCategoryDisplay(
-      "meal"
-    );
-
+    updateCategoryDisplay("meal");
     updateEvaluation();
 
-    clearFormMessage();
-
     mealDialog.close();
-
     return;
   }
 
-  const valueText =
-    mealScoreInput.value.trim();
-
   const value =
-    Number(valueText);
+    Number(mealScoreInput.value);
 
-  if (
-    valueText === "" ||
-    !isValidScore(value)
-  ) {
+  if (!isValidScore(value)) {
     showFormError(
       "お食事の評価は0.000から5.000の間で入力してください。"
     );
-
     return;
   }
 
   mealExcluded = false;
 
   scores.meal =
-    roundToThree(
-      value
-    );
+    roundToThree(value);
 
-  updateCategoryDisplay(
-    "meal"
-  );
-
+  updateCategoryDisplay("meal");
   updateEvaluation();
-
-  clearFormMessage();
 
   mealDialog.close();
 }
 
+
 function updateMealDialogDisplay() {
-  mealNoneCheckbox.checked =
+  mealScoreInput.disabled =
     mealDraftExcluded;
 
   mealScoreInputArea.classList.toggle(
-    "meal-score-disabled",
+    "disabled",
     mealDraftExcluded
   );
-
-  mealScoreInput.disabled =
-    mealDraftExcluded;
 }
 
 
 /* ==================================
    総合評価
-   ★ 重み付き平均
 ================================== */
 
 function calculateNormalScore() {
-  let weightedTotal = 0;
+  let total = 0;
   let weightTotal = 0;
 
-  Object.entries(
-    scores
-  ).forEach(
+  Object.entries(scores).forEach(
     ([category, score]) => {
-
-      if (
-        score === null
-      ) {
+      if (score === null) {
         return;
       }
-
-      /*
-        食事なしの場合は
-        お食事を完全に除外
-      */
 
       if (
         category === "meal" &&
@@ -1514,41 +1242,22 @@ function calculateNormalScore() {
       }
 
       const weight =
-        scoreWeights[
-          category
-        ];
+        scoreWeights[category];
 
-      if (
-        typeof weight !==
-        "number"
-      ) {
-        return;
-      }
-
-      weightedTotal +=
-        score * weight;
-
-      weightTotal +=
-        weight;
+      total += score * weight;
+      weightTotal += weight;
     }
   );
 
-  if (
-    weightTotal === 0
-  ) {
+  if (weightTotal === 0) {
     return null;
   }
 
   return roundToThree(
-    weightedTotal /
-    weightTotal
+    total / weightTotal
   );
 }
 
-
-/* ==================================
-   画面の総合評価更新
-================================== */
 
 function updateEvaluation() {
   const normalScore =
@@ -1558,15 +1267,11 @@ function updateEvaluation() {
     normalScore
   );
 
-  if (
-    normalScore === null
-  ) {
+  if (normalScore === null) {
     totalScoreElement.textContent =
       "---";
 
-    updateRankBadge(
-      null
-    );
+    updateRankBadge(null);
 
     return;
   }
@@ -1574,23 +1279,16 @@ function updateEvaluation() {
   const repeatType =
     getSelectedRepeatType();
 
-  const repeatPoint =
-    getRepeatPoint(
-      repeatType
-    );
-
   const finalScore =
     roundToThree(
       normalScore +
-      repeatPoint
+      getRepeatPoint(repeatType)
     );
 
   totalScoreElement.textContent =
     finalScore.toFixed(3);
 
-  updateRankBadge(
-    finalScore
-  );
+  updateRankBadge(finalScore);
 }
 
 
@@ -1613,9 +1311,17 @@ function setupRepeatControls() {
     );
 }
 
-function setRepeatSelection(
-  type
-) {
+
+function getSelectedRepeatType() {
+  return (
+    document.querySelector(
+      'input[name="repeatType"]:checked'
+    )?.value ?? "none"
+  );
+}
+
+
+function setRepeatSelection(type) {
   const input =
     document.querySelector(
       `input[name="repeatType"][value="${type}"]`
@@ -1623,46 +1329,21 @@ function setRepeatSelection(
 
   if (input) {
     input.checked = true;
-  } else {
-    resetRepeatSelection();
   }
 }
 
-function getSelectedRepeatType() {
-  const input =
-    document.querySelector(
-      'input[name="repeatType"]:checked'
-    );
-
-  return (
-    input?.value ??
-    "none"
-  );
-}
 
 function resetRepeatSelection() {
-  const noneInput =
-    document.querySelector(
-      'input[name="repeatType"][value="none"]'
-    );
-
-  if (noneInput) {
-    noneInput.checked = true;
-  }
+  setRepeatSelection("none");
 }
 
-function getRepeatPoint(
-  type
-) {
-  if (
-    type === "normal"
-  ) {
+
+function getRepeatPoint(type) {
+  if (type === "normal") {
     return 0.050;
   }
 
-  if (
-    type === "intense"
-  ) {
+  if (type === "intense") {
     return 0.100;
   }
 
@@ -1670,18 +1351,9 @@ function getRepeatPoint(
 }
 
 
-/* ==================================
-   リピート判定
-================================== */
-
 function updateRepeatEligibility(
   normalScore
 ) {
-  /*
-    必須項目
-    お食事は「食事なし」可能
-  */
-
   const requiredCategories = [
     "room",
     "size",
@@ -1691,23 +1363,25 @@ function updateRepeatEligibility(
     "satisfaction"
   ];
 
-  const requiredComplete =
+  const complete =
     requiredCategories.every(
       (category) =>
-        scores[
-          category
-        ] !== null
+        scores[category] !== null
     );
 
-  /*
-    4.300以上判定では
-    「広さ」を除外。
+  if (!complete) {
+    repeatNormal.disabled = true;
+    repeatIntense.disabled = true;
 
-    広さは2.000〜5.000という
-    独自配点のため。
-  */
+    repeatMessage.textContent =
+      "評価を入力すると、付与可能か自動判定します。";
 
-  const repeatQualityCategories = [
+    resetRepeatSelection();
+
+    return;
+  }
+
+  const checkCategories = [
     "room",
     "service",
     "bath",
@@ -1715,36 +1389,35 @@ function updateRepeatEligibility(
     "satisfaction"
   ];
 
-  /*
-    食事ありの場合のみ
-    食事も4.300判定へ追加
-  */
+  if (!mealExcluded) {
+    if (scores.meal === null) {
+      repeatNormal.disabled = true;
+      repeatIntense.disabled = true;
 
-  if (
-    !mealExcluded &&
-    scores.meal !== null
-  ) {
-    repeatQualityCategories.push(
-      "meal"
-    );
+      repeatMessage.textContent =
+        "お食事の評価を入力してください。";
+
+      resetRepeatSelection();
+
+      return;
+    }
+
+    checkCategories.push("meal");
   }
 
-  const allAtLeast4300 =
-    requiredComplete &&
-    repeatQualityCategories.every(
+  const all4300 =
+    checkCategories.every(
       (category) =>
         scores[category] !== null &&
         scores[category] >= 4.300
     );
 
   const canNormal =
-    allAtLeast4300 &&
-    normalScore !== null &&
+    all4300 &&
     normalScore >= 4.500;
 
   const canIntense =
-    allAtLeast4300 &&
-    normalScore !== null &&
+    all4300 &&
     normalScore >= 4.800;
 
   repeatNormal.disabled =
@@ -1753,53 +1426,30 @@ function updateRepeatEligibility(
   repeatIntense.disabled =
     !canIntense;
 
-  if (
-    !requiredComplete
-  ) {
-    resetRepeatSelection();
-
+  if (canIntense) {
     repeatMessage.textContent =
-      "お食事以外の6項目を入力すると、自動判定します。";
-
-    return;
-  }
-
-  if (
-    !allAtLeast4300
-  ) {
-    resetRepeatSelection();
-
+      "激リピあり（＋0.100）を付与できます。";
+  } else if (canNormal) {
     repeatMessage.textContent =
-      "広さを除く評価項目に4.300未満があるため、リピートポイントは付与できません。";
-
-    return;
-  }
-
-  if (
-    !canNormal
-  ) {
-    resetRepeatSelection();
-
-    repeatMessage.textContent =
-      "総合評価が4.500未満のため、リピートポイントは付与できません。";
-
-    return;
-  }
-
-  if (
-    canIntense
-  ) {
-    repeatMessage.textContent =
-      "リピあり・激リピありを選択できます。";
+      "リピあり（＋0.050）を付与できます。";
   } else {
     repeatMessage.textContent =
-      "リピありを選択できます。";
+      "リピートポイントの付与条件を満たしていません。";
+  }
+
+  const selected =
+    getSelectedRepeatType();
+
+  if (
+    selected === "intense" &&
+    !canIntense
+  ) {
+    resetRepeatSelection();
   }
 
   if (
-    getSelectedRepeatType() ===
-      "intense" &&
-    !canIntense
+    selected === "normal" &&
+    !canNormal
   ) {
     resetRepeatSelection();
   }
@@ -1810,51 +1460,22 @@ function updateRepeatEligibility(
    ランク
 ================================== */
 
-function getRank(
-  score
-) {
-  if (
-    score >= 4.800
-  ) {
-    return 1;
-  }
-
-  if (
-    score >= 4.500
-  ) {
-    return 2;
-  }
-
-  if (
-    score >= 4.000
-  ) {
-    return 3;
-  }
-
-  if (
-    score >= 3.000
-  ) {
-    return 4;
-  }
-
-  if (
-    score >= 2.000
-  ) {
-    return 5;
-  }
+function getRank(score) {
+  if (score >= 4.800) return 1;
+  if (score >= 4.500) return 2;
+  if (score >= 4.000) return 3;
+  if (score >= 3.000) return 4;
+  if (score >= 2.000) return 5;
 
   return 6;
 }
 
-function updateRankBadge(
-  score
-) {
+
+function updateRankBadge(score) {
   rankBadge.className =
     "rank-badge";
 
-  if (
-    score === null
-  ) {
+  if (score === null) {
     rankBadge.classList.add(
       "rank-unset"
     );
@@ -1866,9 +1487,7 @@ function updateRankBadge(
   }
 
   const rank =
-    getRank(
-      score
-    );
+    getRank(score);
 
   rankBadge.classList.add(
     `rank-${rank}`
@@ -1882,7 +1501,110 @@ function updateRankBadge(
 
 
 /* ==================================
-   地図設定
+   現在地
+================================== */
+
+function setupCurrentLocationControls() {
+  currentLocationButton.addEventListener(
+    "click",
+    getCurrentLocation
+  );
+}
+
+
+function getCurrentLocation() {
+  if (!navigator.geolocation) {
+    currentLocationStatus.textContent =
+      "この端末では現在地を取得できません。";
+
+    return;
+  }
+
+  currentLocationButton.disabled = true;
+
+  currentLocationStatus.textContent =
+    "現在地を取得しています…";
+
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      selectedLatitude =
+        roundCoordinate(
+          position.coords.latitude
+        );
+
+      selectedLongitude =
+        roundCoordinate(
+          position.coords.longitude
+        );
+
+      currentLocationButton.disabled =
+        false;
+
+      currentLocationStatus.textContent =
+        "現在地を取得しました";
+
+      currentLocationStatus.className =
+        "location-status location-set";
+
+      updateLocationStatus();
+      updateCoordinateDisplay();
+
+      if (locationMap) {
+        setLocationMarker(
+          selectedLatitude,
+          selectedLongitude,
+          true
+        );
+      }
+    },
+
+    (error) => {
+      currentLocationButton.disabled =
+        false;
+
+      if (
+        error.code ===
+        error.PERMISSION_DENIED
+      ) {
+        currentLocationStatus.textContent =
+          "位置情報の使用が許可されていません。";
+      } else if (
+        error.code ===
+        error.TIMEOUT
+      ) {
+        currentLocationStatus.textContent =
+          "現在地の取得がタイムアウトしました。";
+      } else {
+        currentLocationStatus.textContent =
+          "現在地の取得に失敗しました。";
+      }
+
+      currentLocationStatus.className =
+        "location-status location-unset";
+    },
+
+    {
+      enableHighAccuracy: true,
+      timeout: 15000,
+      maximumAge: 0
+    }
+  );
+}
+
+
+function updateCurrentLocationStatus() {
+  if (selectedLatitude === null) {
+    currentLocationStatus.textContent =
+      "現在地未取得";
+
+    currentLocationStatus.className =
+      "location-status location-unset";
+  }
+}
+
+
+/* ==================================
+   地図
 ================================== */
 
 function setupLocationControls() {
@@ -1893,29 +1615,7 @@ function setupLocationControls() {
 
   closeLocationDialogButton.addEventListener(
     "click",
-    () => {
-      locationDialog.close();
-    }
-  );
-
-  locationSearchButton.addEventListener(
-    "click",
-    handleLocationSearch
-  );
-
-  locationSearchInput.addEventListener(
-    "keydown",
-    (event) => {
-      if (
-        event.key !== "Enter"
-      ) {
-        return;
-      }
-
-      event.preventDefault();
-
-      handleLocationSearch();
-    }
+    () => locationDialog.close()
   );
 
   clearLocationButton.addEventListener(
@@ -1927,22 +1627,35 @@ function setupLocationControls() {
     "click",
     applySelectedLocation
   );
+
+  /*
+    検索欄は残してあるが、
+    外部住所検索APIは使わない。
+    入力内容に応じて都道府県中心へ移動する。
+  */
+  locationSearchButton.addEventListener(
+    "click",
+    searchLocationLocally
+  );
+
+  locationSearchInput.addEventListener(
+    "keydown",
+    (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        searchLocationLocally();
+      }
+    }
+  );
 }
 
+
 function openLocationDialog() {
-  locationSearchInput.value =
-    [
-      hotelNameInput.value.trim(),
-      addressInput.value.trim()
-    ]
-      .filter(
-        Boolean
-      )
-      .join(" ");
+  locationSearchMessage.textContent = "";
 
   locationDialog.showModal();
 
-  window.setTimeout(
+  setTimeout(
     () => {
       initializeLocationMap();
 
@@ -1961,20 +1674,20 @@ function openLocationDialog() {
         return;
       }
 
-      const center =
-        prefectureCenters[
-          prefectureSelect.value
-        ];
+      if (isJapan()) {
+        const center =
+          prefectureCenters[
+            prefectureSelect.value
+          ];
 
-      if (center) {
         locationMap.setView(
-          center,
-          9
+          center ?? [37.2, 137.2],
+          center ? 9 : 5
         );
       } else {
         locationMap.setView(
-          [37.2, 137.2],
-          5
+          [20, 0],
+          2
         );
       }
     },
@@ -1982,39 +1695,30 @@ function openLocationDialog() {
   );
 }
 
+
 function initializeLocationMap() {
-  if (
-    locationMap
-  ) {
+  if (locationMap) {
     return;
   }
 
-  locationMap =
-    L.map(
-      "locationMap",
-      {
-        center: [
-          37.2,
-          137.2
-        ],
-
-        zoom: 5,
-        minZoom: 4,
-        maxZoom: 19
-      }
-    );
+  locationMap = L.map(
+    "locationMap",
+    {
+      center: [37.2, 137.2],
+      zoom: 5,
+      minZoom: 2,
+      maxZoom: 19
+    }
+  );
 
   L.tileLayer(
     "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
     {
       maxZoom: 19,
-
       attribution:
-        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        "&copy; OpenStreetMap contributors"
     }
-  ).addTo(
-    locationMap
-  );
+  ).addTo(locationMap);
 
   locationMap.on(
     "click",
@@ -2028,39 +1732,6 @@ function initializeLocationMap() {
   );
 }
 
-function handleLocationSearch() {
-  const keyword =
-    locationSearchInput.value.trim();
-
-  if (
-    keyword === ""
-  ) {
-    locationSearchMessage.textContent =
-      "ホテル名または住所を入力してください。";
-
-    return;
-  }
-
-  const center =
-    prefectureCenters[
-      prefectureSelect.value
-    ];
-
-  if (!center) {
-    locationSearchMessage.textContent =
-      "先に都道府県を選択してください。";
-
-    return;
-  }
-
-  locationMap.setView(
-    center,
-    11
-  );
-
-  locationSearchMessage.textContent =
-    "地図を拡大し、ホテルの位置をタップしてください。";
-}
 
 function setLocationMarker(
   latitude,
@@ -2068,30 +1739,21 @@ function setLocationMarker(
   moveMap
 ) {
   selectedLatitude =
-    roundCoordinate(
-      latitude
-    );
+    roundCoordinate(latitude);
 
   selectedLongitude =
-    roundCoordinate(
-      longitude
-    );
+    roundCoordinate(longitude);
 
-  if (
-    !locationMarker
-  ) {
-    locationMarker =
-      L.marker(
-        [
-          selectedLatitude,
-          selectedLongitude
-        ],
-        {
-          draggable: true
-        }
-      ).addTo(
-        locationMap
-      );
+  if (!locationMarker) {
+    locationMarker = L.marker(
+      [
+        selectedLatitude,
+        selectedLongitude
+      ],
+      {
+        draggable: true
+      }
+    ).addTo(locationMap);
 
     locationMarker.on(
       "dragend",
@@ -2121,9 +1783,7 @@ function setLocationMarker(
     );
   }
 
-  if (
-    moveMap
-  ) {
+  if (moveMap) {
     locationMap.setView(
       [
         selectedLatitude,
@@ -2134,17 +1794,16 @@ function setLocationMarker(
   }
 
   updateCoordinateDisplay();
-
-  locationSearchMessage.textContent =
-    "ピンをドラッグして位置を微調整できます。";
 }
 
+
 function clearSelectedLocation() {
-  clearLocationValues();
+  selectedLatitude = null;
+  selectedLongitude = null;
 
   if (
-    locationMap &&
-    locationMarker
+    locationMarker &&
+    locationMap
   ) {
     locationMap.removeLayer(
       locationMarker
@@ -2156,14 +1815,13 @@ function clearSelectedLocation() {
   updateCoordinateDisplay();
   updateLocationStatus();
 
-  locationSearchMessage.textContent =
-    "位置を解除しました。";
+  currentLocationStatus.textContent =
+    "現在地未取得";
+
+  currentLocationStatus.className =
+    "location-status location-unset";
 }
 
-function clearLocationValues() {
-  selectedLatitude = null;
-  selectedLongitude = null;
-}
 
 function applySelectedLocation() {
   if (
@@ -2181,6 +1839,7 @@ function applySelectedLocation() {
   locationDialog.close();
 }
 
+
 function updateCoordinateDisplay() {
   latitudeDisplay.textContent =
     selectedLatitude === null
@@ -2193,25 +1852,105 @@ function updateCoordinateDisplay() {
       : selectedLongitude.toFixed(6);
 }
 
+
 function updateLocationStatus() {
   if (
     selectedLatitude === null ||
     selectedLongitude === null
   ) {
-    locationStatus.className =
-      "location-status location-unset";
-
     locationStatus.textContent =
       "位置未設定";
+
+    locationStatus.className =
+      "location-status location-unset";
 
     return;
   }
 
-  locationStatus.className =
-    "location-status location-set";
-
   locationStatus.textContent =
     `位置設定済み（${selectedLatitude.toFixed(5)}, ${selectedLongitude.toFixed(5)}）`;
+
+  locationStatus.className =
+    "location-status location-set";
+}
+
+
+/* ==================================
+   地図内の簡易検索
+================================== */
+
+function searchLocationLocally() {
+  const query =
+    locationSearchInput.value
+      .trim();
+
+  if (query === "") {
+    locationSearchMessage.textContent =
+      "検索する地域を入力してください。";
+
+    return;
+  }
+
+  /*
+    日本なら入力文字列から都道府県を探す
+  */
+  const prefecture =
+    prefectures.find(
+      (item) =>
+        query.includes(item.name)
+    );
+
+  if (prefecture) {
+    const center =
+      prefectureCenters[
+        prefecture.slug
+      ];
+
+    locationMap.setView(
+      center,
+      10
+    );
+
+    locationSearchMessage.textContent =
+      `${prefecture.name}付近を表示しました。地図上で正確な位置を指定してください。`;
+
+    return;
+  }
+
+  /*
+    選択済み都道府県がある場合
+  */
+  if (
+    isJapan() &&
+    prefectureSelect.value
+  ) {
+    const selectedPrefecture =
+      prefectures.find(
+        (item) =>
+          item.slug ===
+          prefectureSelect.value
+      );
+
+    const center =
+      prefectureCenters[
+        prefectureSelect.value
+      ];
+
+    if (center) {
+      locationMap.setView(
+        center,
+        10
+      );
+
+      locationSearchMessage.textContent =
+        `${selectedPrefecture.name}付近を表示しました。地図上で位置を指定してください。`;
+
+      return;
+    }
+  }
+
+  locationSearchMessage.textContent =
+    "この検索欄では住所の自動検索は行いません。地図を動かして位置を指定してください。";
 }
 
 
@@ -2224,58 +1963,33 @@ hotelForm.addEventListener(
   (event) => {
     event.preventDefault();
 
-    clearFormMessage();
+    clearFormError();
 
-    const validationMessage =
+    const message =
       validateForm();
 
-    if (
-      validationMessage
-    ) {
-      showFormError(
-        validationMessage
-      );
-
+    if (message) {
+      showFormError(message);
       return;
     }
 
     const selectedPrefecture =
-      prefectures.find(
-        (prefecture) =>
-          prefecture.slug ===
-          prefectureSelect.value
-      );
-
-    if (
-      !selectedPrefecture
-    ) {
-      showFormError(
-        "都道府県を選択してください。"
-      );
-
-      return;
-    }
+      isJapan()
+        ? prefectures.find(
+            (prefecture) =>
+              prefecture.slug ===
+              prefectureSelect.value
+          )
+        : null;
 
     const normalScore =
       calculateNormalScore();
-
-    if (
-      normalScore === null
-    ) {
-      showFormError(
-        "評価を入力してください。"
-      );
-
-      return;
-    }
 
     const repeatType =
       getSelectedRepeatType();
 
     const repeatPoint =
-      getRepeatPoint(
-        repeatType
-      );
+      getRepeatPoint(repeatType);
 
     const finalScore =
       roundToThree(
@@ -2292,67 +2006,47 @@ hotelForm.addEventListener(
         finalScore
       });
 
-    try {
-      if (
-        isEditMode
-      ) {
-        updateStoredHotel(
-          hotelData
-        );
+    if (isEditMode) {
+      updateStoredHotel(hotelData);
 
-        showFormSuccess(
-          "評価を更新しました。"
-        );
+      window.location.href =
+        `hotel.html?id=${encodeURIComponent(
+          hotelData.id
+        )}`;
 
-        window.setTimeout(
-          () => {
-            window.location.href =
-              `hotel.html?id=${encodeURIComponent(
-                hotelData.id
-              )}`;
-          },
-          600
-        );
-      } else {
-        addStoredHotel(
-          hotelData
-        );
-
-        showFormSuccess(
-          "評価を保存しました。"
-        );
-
-        window.setTimeout(
-          () => {
-            const query =
-              new URLSearchParams({
-                code:
-                  selectedPrefecture.code,
-
-                pref:
-                  selectedPrefecture.slug,
-
-                name:
-                  selectedPrefecture.name
-              });
-
-            window.location.href =
-              `prefecture.html?${query.toString()}`;
-          },
-          600
-        );
-      }
-    } catch (
-      error
-    ) {
-      console.error(
-        error
-      );
-
-      showFormError(
-        "保存中にエラーが発生しました。"
-      );
+      return;
     }
+
+    addStoredHotel(hotelData);
+
+    /*
+      日本なら従来どおり都道府県画面へ
+  */
+    if (
+      isJapan() &&
+      selectedPrefecture
+    ) {
+      const query =
+        new URLSearchParams({
+          code:
+            selectedPrefecture.code,
+          pref:
+            selectedPrefecture.slug,
+          name:
+            selectedPrefecture.name
+        });
+
+      window.location.href =
+        `prefecture.html?${query.toString()}`;
+
+      return;
+    }
+
+    /*
+      海外は全ホテル一覧へ
+  */
+    window.location.href =
+      "list.html";
   }
 );
 
@@ -2369,9 +2063,18 @@ function validateForm() {
   }
 
   if (
+    isJapan() &&
     prefectureSelect.value === ""
   ) {
     return "都道府県を選択してください。";
+  }
+
+  if (
+    isCustomCountry() &&
+    customCountryInput.value
+      .trim() === ""
+  ) {
+    return "国・地域名を入力してください。";
   }
 
   if (
@@ -2389,18 +2092,13 @@ function validateForm() {
     "satisfaction"
   ];
 
-  const missingRequired =
+  if (
     requiredCategories.some(
       (category) =>
-        scores[
-          category
-        ] === null
-    );
-
-  if (
-    missingRequired
+        scores[category] === null
+    )
   ) {
-    return "お食事以外の6つの評価項目を入力してください。";
+    return "お食事以外の6項目を入力してください。";
   }
 
   if (
@@ -2444,14 +2142,31 @@ function createHotelData({
     name:
       hotelNameInput.value.trim(),
 
+    countryCode:
+      countrySelect.value,
+
+    countryName:
+      getSelectedCountryName(),
+
+    region:
+      isJapan()
+        ? selectedPrefecture?.name ?? ""
+        : foreignRegionInput.value.trim(),
+
     prefectureCode:
-      selectedPrefecture.code,
+      isJapan()
+        ? selectedPrefecture?.code ?? ""
+        : "",
 
     prefecture:
-      selectedPrefecture.slug,
+      isJapan()
+        ? selectedPrefecture?.slug ?? ""
+        : "",
 
     prefectureName:
-      selectedPrefecture.name,
+      isJapan()
+        ? selectedPrefecture?.name ?? ""
+        : "",
 
     address:
       addressInput.value.trim(),
@@ -2475,14 +2190,11 @@ function createHotelData({
 
     sizeDetails:
       sizeDetails
-        ? copySizeDetails(
-            sizeDetails
-          )
+        ? { ...sizeDetails }
         : null,
 
     roomType:
-      sizeDetails?.roomType ??
-      null,
+      sizeDetails?.roomType ?? null,
 
     sizeScore:
       scores.size,
@@ -2498,18 +2210,14 @@ function createHotelData({
     finalScore,
 
     rank:
-      getRank(
-        finalScore
-      ),
+      getRank(finalScore),
 
     hallOfFame:
-      finalScore >
-      5.000,
+      finalScore > 5.000,
 
     createdAt:
       isEditMode
-        ? editingHotel.createdAt ??
-          now
+        ? editingHotel.createdAt ?? now
         : now,
 
     updatedAt:
@@ -2522,151 +2230,102 @@ function createHotelData({
    localStorage
 ================================== */
 
-function addStoredHotel(
-  hotelData
-) {
-  const hotels =
-    getStoredHotels();
+function getStoredHotels() {
+  try {
+    const data =
+      JSON.parse(
+        localStorage.getItem(
+          "hotelScoreMap.hotels"
+        )
+      );
 
-  hotels.push(
-    hotelData
-  );
+    return Array.isArray(data)
+      ? data
+      : [];
+  } catch {
+    return [];
+  }
+}
 
-  saveStoredHotels(
-    hotels
+
+function saveStoredHotels(hotels) {
+  localStorage.setItem(
+    "hotelScoreMap.hotels",
+    JSON.stringify(hotels)
   );
 }
 
-function updateStoredHotel(
-  hotelData
-) {
+
+function addStoredHotel(hotel) {
+  const hotels =
+    getStoredHotels();
+
+  hotels.push(hotel);
+
+  saveStoredHotels(hotels);
+}
+
+
+function updateStoredHotel(hotel) {
   const hotels =
     getStoredHotels();
 
   const index =
     hotels.findIndex(
-      (hotel) =>
-        hotel.id ===
-        editId
+      (item) =>
+        item.id === editId
     );
 
-  if (
-    index === -1
-  ) {
-    throw new Error(
-      "更新するホテルが見つかりません。"
-    );
+  if (index === -1) {
+    return;
   }
 
-  hotels[index] =
-    hotelData;
+  hotels[index] = hotel;
 
-  saveStoredHotels(
-    hotels
-  );
-}
-
-function getStoredHotels() {
-  const stored =
-    localStorage.getItem(
-      "hotelScoreMap.hotels"
-    );
-
-  if (
-    !stored
-  ) {
-    return [];
-  }
-
-  try {
-    const parsed =
-      JSON.parse(
-        stored
-      );
-
-    return Array.isArray(
-      parsed
-    )
-      ? parsed
-      : [];
-  } catch (
-    error
-  ) {
-    console.error(
-      "ホテルデータの読み込みに失敗しました。",
-      error
-    );
-
-    return [];
-  }
-}
-
-function saveStoredHotels(
-  hotels
-) {
-  localStorage.setItem(
-    "hotelScoreMap.hotels",
-    JSON.stringify(
-      hotels
-    )
-  );
+  saveStoredHotels(hotels);
 }
 
 
 /* ==================================
-   共通処理
+   共通
 ================================== */
 
 function createHotelId() {
   if (
-    typeof crypto !==
-      "undefined" &&
+    window.crypto &&
     typeof crypto.randomUUID ===
       "function"
   ) {
     return crypto.randomUUID();
   }
 
-  return `hotel-${Date.now()}-${Math.random()
-    .toString(16)
-    .slice(2)}`;
+  return (
+    `hotel-${Date.now()}-${Math.random()
+      .toString(36)
+      .slice(2)}`
+  );
 }
 
-function clearFormMessage() {
+
+function showFormError(message) {
   formMessage.textContent =
-    "";
+    message;
 
-  formMessage.style.color =
-    "";
-}
-
-function showFormError(
-  message
-) {
   formMessage.style.color =
     "#d32f2f";
-
-  formMessage.textContent =
-    message;
 }
 
-function showFormSuccess(
-  message
-) {
-  formMessage.style.color =
-    "#2e7d32";
 
-  formMessage.textContent =
-    message;
+function clearFormError() {
+  formMessage.textContent = "";
 }
 
-function isValidScore(
-  value
-) {
+
+function isValidScore(value) {
   if (
     value === null ||
-    value === undefined ||
-    value === ""
+    value === "" ||
+    typeof value === "undefined"
   ) {
     return false;
   }
@@ -2675,55 +2334,44 @@ function isValidScore(
     Number(value);
 
   return (
-    Number.isFinite(
-      number
-    ) &&
+    Number.isFinite(number) &&
     number >= 0 &&
     number <= 5
   );
 }
 
-function isValidLatitude(
-  value
-) {
+
+function isValidLatitude(value) {
   return (
-    Number.isFinite(
-      value
-    ) &&
+    Number.isFinite(value) &&
     value >= -90 &&
     value <= 90
   );
 }
 
-function isValidLongitude(
-  value
-) {
+
+function isValidLongitude(value) {
   return (
-    Number.isFinite(
-      value
-    ) &&
+    Number.isFinite(value) &&
     value >= -180 &&
     value <= 180
   );
 }
 
-function roundToThree(
-  value
-) {
-  return Math.round(
-    (
-      Number(value) +
-      Number.EPSILON
-    ) *
-    1000
-  ) / 1000;
+
+function roundToThree(value) {
+  return (
+    Math.round(
+      Number(value) * 1000
+    ) / 1000
+  );
 }
 
-function roundCoordinate(
-  value
-) {
-  return Math.round(
-    Number(value) *
-    1000000
-  ) / 1000000;
+
+function roundCoordinate(value) {
+  return (
+    Math.round(
+      Number(value) * 1000000
+    ) / 1000000
+  );
 }

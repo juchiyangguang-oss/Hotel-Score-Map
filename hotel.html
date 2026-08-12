@@ -3,325 +3,450 @@
 
 <head>
 
-<meta charset="UTF-8">
+  <meta charset="UTF-8">
 
-<meta
-name="viewport"
-content="width=device-width, initial-scale=1.0"
->
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
-<title>
-ホテル詳細 | Hotel Score Map
-</title>
+  <title>
+    ホテル詳細 | Hotel Score Map
+  </title>
 
-<link
-rel="stylesheet"
-href="css/style.css"
->
 
-<link
-rel="stylesheet"
-href="css/hotel.css"
->
+  <!-- ==============================
+       PWA
+  ============================== -->
+
+  <link
+    rel="manifest"
+    href="manifest.json"
+  >
+
+  <meta
+    name="theme-color"
+    content="#ffffff"
+  >
+
+  <meta
+    name="apple-mobile-web-app-capable"
+    content="yes"
+  >
+
+  <meta
+    name="apple-mobile-web-app-status-bar-style"
+    content="default"
+  >
+
+  <meta
+    name="apple-mobile-web-app-title"
+    content="Hotel Score Map"
+  >
+
+
+  <!-- ==============================
+       CSS
+  ============================== -->
+
+  <link
+    rel="stylesheet"
+    href="css/style.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="css/hotel.css"
+  >
 
 </head>
 
+
 <body>
 
-<header class="app-header">
+  <header class="app-header">
 
-<h1
-id="hotelTitle"
-class="app-title"
->
+    <h1
+      id="hotelTitle"
+      class="app-title"
+    >
+      ホテル詳細
+    </h1>
 
-ホテル詳細
+  </header>
 
-</h1>
 
-</header>
+  <main class="main-content">
 
-<main class="main-content">
+    <article class="hotel-detail">
 
-<article class="hotel-detail">
 
-<div class="detail-toolbar">
+      <!-- ==============================
+           操作
+      ============================== -->
 
-<button
-type="button"
-id="backButton"
-class="back-button"
->
+      <div class="detail-toolbar">
 
-‹ 戻る
+        <button
+          type="button"
+          id="backButton"
+          class="back-button"
+        >
+          ‹ 戻る
+        </button>
 
-</button>
 
-<div class="detail-actions">
+        <div class="detail-actions">
 
-<button
-type="button"
-id="editButton"
-class="edit-button"
->
+          <button
+            type="button"
+            id="editButton"
+            class="edit-button"
+          >
+            編集
+          </button>
 
-編集
 
-</button>
+          <button
+            type="button"
+            id="deleteButton"
+            class="delete-button"
+          >
+            削除
+          </button>
 
-<button
-type="button"
-id="deleteButton"
-class="delete-button"
->
+        </div>
 
-削除
+      </div>
 
-</button>
 
-</div>
+      <!-- ==============================
+           ホテル概要
+      ============================== -->
 
-</div>
+      <section class="overview-card">
 
-<section class="overview-card">
+        <div class="overview-main">
 
-<div class="overview-main">
+          <p
+            id="hotelLocation"
+            class="hotel-location"
+          >
+            所在地未登録
+          </p>
 
-<p
-id="hotelLocation"
-class="hotel-location"
->
 
-所在地未登録
+          <p
+            id="hotelStayDate"
+            class="hotel-stay-date"
+          >
+            宿泊日未登録
+          </p>
 
-</p>
+        </div>
 
-<p
-id="hotelStayDate"
-class="hotel-stay-date"
->
 
-宿泊日未登録
+        <div class="overview-score">
 
-</p>
+          <p class="score-label">
+            総合評価
+          </p>
 
-</div>
+          <p
+            id="hotelScore"
+            class="hotel-score-large"
+          >
+            ---
+          </p>
 
-<div class="overview-score">
+          <div
+            id="hotelRank"
+            class="hotel-rank rank-unset"
+          >
+            未評価
+          </div>
 
-<p class="score-label">
-総合評価
-</p>
+        </div>
 
-<p
-id="hotelScore"
-class="hotel-score-large"
->
+      </section>
 
----
 
-</p>
+      <!-- ==============================
+           評価内訳
+      ============================== -->
 
-<div
-id="hotelRank"
-class="hotel-rank rank-unset"
->
+      <section class="score-detail-section">
 
-未評価
+        <h2>
+          評価内訳
+        </h2>
 
-</div>
 
-</div>
+        <div class="score-detail-list">
 
-</section>
+          <div class="score-detail-item">
 
-<section class="score-detail-section">
+            <span>
+              客室・アメニティ
+            </span>
 
-<h2>
-評価内訳
-</h2>
+            <strong id="scoreRoom">
+              未評価
+            </strong>
 
-<div class="score-detail-list">
+          </div>
 
-<div class="score-detail-item">
-<span>客室・アメニティ</span>
-<strong id="scoreRoom">未評価</strong>
-</div>
 
-<div class="score-detail-item">
-<span>接客・サービス</span>
-<strong id="scoreService">未評価</strong>
-</div>
+          <div class="score-detail-item">
 
-<div class="score-detail-item">
-<span>バス・お風呂</span>
-<strong id="scoreBath">未評価</strong>
-</div>
+            <span>
+              広さ
+            </span>
 
-<div class="score-detail-item">
-<span>施設・設備</span>
-<strong id="scoreFacility">未評価</strong>
-</div>
+            <strong id="scoreSize">
+              未評価
+            </strong>
 
-<div class="score-detail-item">
-<span>お食事</span>
-<strong id="scoreMeal">未評価</strong>
-</div>
+          </div>
 
-<div class="score-detail-item">
-<span>満足度</span>
-<strong id="scoreSatisfaction">未評価</strong>
-</div>
 
-</div>
+          <div class="score-detail-item">
 
-</section>
+            <span>
+              接客・サービス
+            </span>
 
-<section class="repeat-detail-section">
+            <strong id="scoreService">
+              未評価
+            </strong>
 
-<h2>
-リピートポイント
-</h2>
+          </div>
 
-<div class="repeat-detail-grid">
 
-<div>
+          <div class="score-detail-item">
 
-<span class="detail-label">
-通常評価
-</span>
+            <span>
+              バス・お風呂
+            </span>
 
-<strong id="normalScore">
----
-</strong>
+            <strong id="scoreBath">
+              未評価
+            </strong>
 
-</div>
+          </div>
 
-<div>
 
-<span class="detail-label">
-加点
-</span>
+          <div class="score-detail-item">
 
-<strong id="repeatPoint">
-+0.000
-</strong>
+            <span>
+              施設・設備
+            </span>
 
-</div>
+            <strong id="scoreFacility">
+              未評価
+            </strong>
 
-<div>
+          </div>
 
-<span class="detail-label">
-種別
-</span>
 
-<strong id="repeatType">
-なし
-</strong>
+          <div class="score-detail-item">
 
-</div>
+            <span>
+              お食事
+            </span>
 
-</div>
+            <strong id="scoreMeal">
+              未評価
+            </strong>
 
-</section>
+          </div>
 
-</article>
 
-</main>
+          <div class="score-detail-item">
 
-<nav class="bottom-nav">
+            <span>
+              満足度
+            </span>
 
-<a
-href="index.html"
-class="nav-item"
->
+            <strong id="scoreSatisfaction">
+              未評価
+            </strong>
 
-<span class="nav-icon">
-⌂
-</span>
+          </div>
 
-<span class="nav-label">
-ホーム
-</span>
+        </div>
 
-</a>
+      </section>
 
-<a
-href="list.html"
-class="nav-item active"
->
 
-<span class="nav-icon">
-≡
-</span>
+      <!-- ==============================
+           リピートポイント
+      ============================== -->
 
-<span class="nav-label">
-一覧
-</span>
+      <section class="repeat-detail-section">
 
-</a>
+        <h2>
+          リピートポイント
+        </h2>
 
-<a
-href="add.html"
-class="nav-item"
->
 
-<span class="nav-icon">
-＋
-</span>
+        <div class="repeat-detail-grid">
 
-<span class="nav-label">
-評価追加
-</span>
+          <div>
 
-</a>
+            <span class="detail-label">
+              通常評価
+            </span>
 
-</nav>
+            <strong id="normalScore">
+              ---
+            </strong>
 
-<dialog
-id="deleteDialog"
-class="delete-dialog"
->
+          </div>
 
-<form method="dialog">
 
-<h2>
-この評価を削除しますか？
-</h2>
+          <div>
 
-<p>
-削除したデータは元に戻せません。
-</p>
+            <span class="detail-label">
+              加点
+            </span>
 
-<div class="delete-dialog-actions">
+            <strong id="repeatPoint">
+              +0.000
+            </strong>
 
-<button
-type="submit"
-value="cancel"
-class="cancel-button"
->
+          </div>
 
-キャンセル
 
-</button>
+          <div>
 
-<button
-type="button"
-id="confirmDeleteButton"
-class="confirm-delete-button"
->
+            <span class="detail-label">
+              種別
+            </span>
 
-削除する
+            <strong id="repeatType">
+              なし
+            </strong>
 
-</button>
+          </div>
 
-</div>
+        </div>
 
-</form>
+      </section>
 
-</dialog>
+    </article>
 
-<script src="js/hotel.js"></script>
+  </main>
+
+
+  <!-- ==============================
+       下部ナビ
+  ============================== -->
+
+  <nav class="bottom-nav">
+
+    <a
+      href="index.html"
+      class="nav-item"
+    >
+
+      <span class="nav-icon">
+        ⌂
+      </span>
+
+      <span class="nav-label">
+        ホーム
+      </span>
+
+    </a>
+
+
+    <a
+      href="list.html"
+      class="nav-item active"
+    >
+
+      <span class="nav-icon">
+        ≡
+      </span>
+
+      <span class="nav-label">
+        一覧
+      </span>
+
+    </a>
+
+
+    <a
+      href="add.html"
+      class="nav-item"
+    >
+
+      <span class="nav-icon">
+        ＋
+      </span>
+
+      <span class="nav-label">
+        評価追加
+      </span>
+
+    </a>
+
+  </nav>
+
+
+  <!-- ==============================
+       削除確認
+  ============================== -->
+
+  <dialog
+    id="deleteDialog"
+    class="delete-dialog"
+  >
+
+    <form method="dialog">
+
+      <h2>
+        この評価を削除しますか？
+      </h2>
+
+      <p>
+        削除したデータは元に戻せません。
+      </p>
+
+
+      <div class="delete-dialog-actions">
+
+        <button
+          type="submit"
+          value="cancel"
+          class="cancel-button"
+        >
+          キャンセル
+        </button>
+
+
+        <button
+          type="button"
+          id="confirmDeleteButton"
+          class="confirm-delete-button"
+        >
+          削除する
+        </button>
+
+      </div>
+
+    </form>
+
+  </dialog>
+
+
+  <!-- ==============================
+       アプリ
+  ============================== -->
+
+  <script src="js/hotel.js"></script>
+  <script src="js/pwa.js"></script>
 
 </body>
 
