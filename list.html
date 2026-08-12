@@ -10,7 +10,9 @@
     content="width=device-width, initial-scale=1.0"
   >
 
-  <title>ホテル・地域検索 | Hotel Score Map</title>
+  <title>
+    ホテル・地域検索 | Hotel Score Map
+  </title>
 
   <link
     rel="stylesheet"
@@ -24,207 +26,295 @@
 
 </head>
 
+
 <body>
 
-<header class="app-header">
 
-<h1 class="app-title">
-ホテル・地域検索
-</h1>
+  <!-- ==============================
+       ヘッダー
+  ============================== -->
 
-</header>
+  <header class="app-header">
 
-<main class="main-content">
+    <h1 class="app-title">
+      ホテル・地域検索
+    </h1>
 
-<section class="list-page">
+  </header>
 
-<div class="search-panel">
 
-<label
-for="hotelSearch"
-class="search-label"
->
+  <!-- ==============================
+       メイン
+  ============================== -->
 
-ホテル名・地域・住所を検索
+  <main class="main-content">
 
-</label>
+    <section class="list-page">
 
-<div class="search-row">
 
-<input
-type="search"
-id="hotelSearch"
-class="search-input"
-placeholder="例：天童、湯田中、長野県"
-autocomplete="off"
->
+      <!-- ==============================
+           検索
+      ============================== -->
 
-<button
-type="button"
-id="clearSearchButton"
-class="clear-search-button"
->
+      <div class="search-panel">
 
-クリア
+        <label
+          for="hotelSearch"
+          class="search-label"
+        >
+          ホテル名・地域・住所を検索
+        </label>
 
-</button>
 
-</div>
+        <div class="search-row">
 
-<p
-id="searchStatus"
-class="search-status"
-aria-live="polite"
->
+          <input
+            type="search"
+            id="hotelSearch"
+            class="search-input"
+            placeholder="例：天童、湯田中、長野県"
+            autocomplete="off"
+          >
 
-ホテル名・地域・住所から検索できます
 
-</p>
+          <button
+            type="button"
+            id="clearSearchButton"
+            class="clear-search-button"
+          >
+            クリア
+          </button>
 
-</div>
+        </div>
 
-<section
-id="searchResultSection"
-class="search-result-section"
-hidden
->
 
-<div class="section-heading-row">
+        <p
+          id="searchStatus"
+          class="search-status"
+          aria-live="polite"
+        >
+          ホテル名・地域・住所から検索できます
+        </p>
 
-<h2>
-検索結果
-</h2>
+      </div>
 
-<span
-id="searchResultCount"
-class="result-count"
->
 
-0施設
+      <!-- ==============================
+           検索結果
+      ============================== -->
 
-</span>
+      <section
+        id="searchResultSection"
+        class="search-result-section"
+        hidden
+      >
 
-</div>
+        <div class="section-heading-row">
 
-<div
-id="hotelSearchResults"
-class="hotel-search-results"
-></div>
+          <h2>
+            検索結果
+          </h2>
 
-</section>
+          <span
+            id="searchResultCount"
+            class="result-count"
+          >
+            0施設
+          </span>
 
-<section
-id="allHotelsSection"
-class="all-hotels-section"
->
+        </div>
 
-<div class="section-heading-row">
 
-<h2>
-すべてのホテル
-</h2>
+        <div
+          id="hotelSearchResults"
+          class="hotel-search-results"
+        ></div>
 
-<span
-id="allHotelsCount"
-class="result-count"
->
-0施設
-</span>
+      </section>
 
-</div>
 
-<div
-id="allHotelsList"
-class="hotel-search-results"
-aria-live="polite"
-></div>
+      <!-- ==============================
+           すべてのホテル
+      ============================== -->
 
-</section>
+      <section
+        id="allHotelsSection"
+        class="all-hotels-section"
+      >
 
-<section
-id="prefectureSection"
-class="prefecture-section"
->
+        <div
+          class="section-heading-row all-hotels-heading"
+        >
 
-<div class="section-heading-row">
+          <h2>
+            すべてのホテル
+          </h2>
 
-<h2>
-都道府県から選ぶ
-</h2>
 
-<span
-id="prefectureHotelCount"
-class="result-count"
->
+          <div class="all-hotels-controls">
 
-0件
+            <label
+              for="allHotelsSort"
+              class="sort-label"
+            >
+              並び替え
+            </label>
 
-</span>
 
-</div>
+            <select
+              id="allHotelsSort"
+              class="sort-select"
+            >
 
-<div
-id="prefList"
-class="pref-list"
-aria-live="polite"
-></div>
+              <option value="score-desc">
+                評価が高い順
+              </option>
 
-</section>
+              <option value="score-asc">
+                評価が低い順
+              </option>
 
-</section>
+              <option value="date-desc">
+                最新宿泊日が新しい順
+              </option>
 
-</main>
+              <option value="date-asc">
+                最新宿泊日が古い順
+              </option>
 
-<nav class="bottom-nav">
+              <option value="count-desc">
+                宿泊回数が多い順
+              </option>
 
-<a
-href="index.html"
-class="nav-item"
->
+              <option value="name">
+                ホテル名順
+              </option>
 
-<span class="nav-icon">
-⌂
-</span>
+            </select>
 
-<span class="nav-label">
-ホーム
-</span>
 
-</a>
+            <span
+              id="allHotelsCount"
+              class="result-count"
+            >
+              0施設
+            </span>
 
-<a
-href="list.html"
-class="nav-item active"
->
+          </div>
 
-<span class="nav-icon">
-≡
-</span>
+        </div>
 
-<span class="nav-label">
-一覧
-</span>
 
-</a>
+        <div
+          id="allHotelsList"
+          class="hotel-search-results"
+          aria-live="polite"
+        ></div>
 
-<a
-href="add.html"
-class="nav-item"
->
+      </section>
 
-<span class="nav-icon">
-＋
-</span>
 
-<span class="nav-label">
-評価追加
-</span>
+      <!-- ==============================
+           都道府県
+      ============================== -->
 
-</a>
+      <section
+        id="prefectureSection"
+        class="prefecture-section"
+      >
 
-</nav>
+        <div class="section-heading-row">
 
-<script src="js/list.js"></script>
+          <h2>
+            都道府県から選ぶ
+          </h2>
+
+          <span
+            id="prefectureHotelCount"
+            class="result-count"
+          >
+            0施設
+          </span>
+
+        </div>
+
+
+        <div
+          id="prefList"
+          class="pref-list"
+          aria-live="polite"
+        ></div>
+
+      </section>
+
+
+    </section>
+
+  </main>
+
+
+  <!-- ==============================
+       下部ナビ
+  ============================== -->
+
+  <nav class="bottom-nav">
+
+    <a
+      href="index.html"
+      class="nav-item"
+    >
+
+      <span class="nav-icon">
+        ⌂
+      </span>
+
+      <span class="nav-label">
+        ホーム
+      </span>
+
+    </a>
+
+
+    <a
+      href="list.html"
+      class="nav-item active"
+    >
+
+      <span class="nav-icon">
+        ≡
+      </span>
+
+      <span class="nav-label">
+        一覧
+      </span>
+
+    </a>
+
+
+    <a
+      href="add.html"
+      class="nav-item"
+    >
+
+      <span class="nav-icon">
+        ＋
+      </span>
+
+      <span class="nav-label">
+        評価追加
+      </span>
+
+    </a>
+
+  </nav>
+
+
+  <!-- ==============================
+       JavaScript
+  ============================== -->
+
+  <script src="js/list.js"></script>
+
 
 </body>
 
